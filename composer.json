@@ -5,6 +5,10 @@
     "license": "MIT",
     "authors": [
         {
+            "name": "Jayan Ratna",
+            "email": "jayan@pixelet.co"
+        },
+        {
             "name": "Resend and contributors",
             "homepage": "https://github.com/jayanratna/resend-php/contributors"
         }
@@ -30,7 +34,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.x-dev"
+            "dev-main": "1.x-dev"
         },
         "laravel": {
             "providers": [
