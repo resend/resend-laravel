@@ -1,0 +1,50 @@
+{
+    "name": "resend/laravel",
+    "description": "",
+    "keywords": ["php", "resend", "laravel", "sdk", "api", "client"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Resend and contributors",
+            "homepage": "https://github.com/jayanratna/resend-php/contributors"
+        }
+    ],
+    "require": {
+        "php": "^8.1.0",
+        "illuminate/support": "^9.21|^10.0",
+        "resend/client": "^0.1.1"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.14",
+        "pestphp/pest": "^1.22"
+    },
+    "autoload": {
+        "psr-4": {
+            "Resend\\Laravel\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Resend\\Laravel\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "0.x-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Resend\\Laravel\\ResendServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "preferred-install": "dist",
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

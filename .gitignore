@@ -1,0 +1,13 @@
+# Ignore cache directories and files.
+/.phpunit.cache
+.php-cs-fixer.cache
+
+# Mac OS X dumps these all over the place.
+.DS_Store
+
+# Ignore the /vendor/ directory and composer.lock.
+/vendor/
+composer.lock
+
+# Ignore cached PHPUnit results.
+.phpunit.result.cache

@@ -1,0 +1,10 @@
+{
+    "search.exclude": {
+        "**/vendor": true
+    },
+    "php-cs-fixer.executablePath": "${workspaceFolder}/vendor/bin/php-cs-fixer",
+    "[php]": {
+        "editor.defaultFormatter": "junstyle.php-cs-fixer",
+        "editor.formatOnSave": true
+    }
+}
