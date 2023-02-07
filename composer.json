@@ -16,7 +16,8 @@
     "require": {
         "php": "^8.1.0",
         "illuminate/support": "^9.21|^10.0",
-        "resend/client": "^0.1.1"
+        "resend/client": "^0.1.1",
+        "symfony/mailer": "^6.2"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.14",
