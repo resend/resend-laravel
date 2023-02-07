@@ -29,6 +29,24 @@ final class ResendServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->configure();
+        $this->bindResendClient();
+    }
+
+    /**
+     * Setup the configuration for Resend.
+     */
+    protected function configure(): void
+    {
+        $this->mergeConfigFrom(
+            __DIR__ . '/../config/resend.php', 'resend'
+        );
+    }
+
+    /**
+     * Bind the Resend Client.
+     */
+    protected function bindResendClient(): void
+    {
         $this->app->singleton(Client::class, static function (): Client {
             $apiKey = config('resend.api_key');
 
@@ -42,18 +60,16 @@ final class ResendServiceProvider extends ServiceProvider
         $this->app->alias(Client::class, 'resend');
     }
 
-    protected function configure(): void
-    {
-        $this->mergeConfigFrom(
-            __DIR__ . '/../config/resend.php', 'resend'
-        );
-    }
-
+    /**
+     * Register the package's publishable assets.
+     */
     protected function registerPublishing(): void
     {
-        $this->publishes([
-            __DIR__ . '/../config/resend.php' => config_path('resend.php'),
-        ]);
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__ . '/../config/resend.php' => $this->app->configPath('resend.php'),
+            ]);
+        }
     }
 
     /**
