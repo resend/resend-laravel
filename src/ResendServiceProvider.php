@@ -21,6 +21,8 @@ final class ResendServiceProvider extends ServiceProvider
         Mail::extend('resend', function (array $config = []) {
             return new ResendTransportFactory($this->app['resend'], $config['options'] ?? []);
         });
+
+        dump($this->app['mail.manager']->mailer('resend'));
     }
 
     /**
