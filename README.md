@@ -1,8 +1,8 @@
 # Resend for Laravel
 
 [![Tests](https://img.shields.io/github/actions/workflow/status/jayanratna/resend-laravel/tests.yml?label=tests&style=for-the-badge&labelColor=000000)](https://github.com/jayanratna/resend-laravel/actions/workflows/tests.yml)
-[![Packagist Downloads](https://img.shields.io/packagist/dt/resend/client?style=for-the-badge&labelColor=000000)](https://packagist.org/packages/resend/client)
-[![Packagist Version](https://img.shields.io/packagist/v/resend/client?style=for-the-badge&labelColor=000000)](https://packagist.org/packages/resend/client)
+[![Packagist Downloads](https://img.shields.io/packagist/dt/resend/laravel?style=for-the-badge&labelColor=000000)](https://packagist.org/packages/resend/laravel)
+[![Packagist Version](https://img.shields.io/packagist/v/resend/laravel?style=for-the-badge&labelColor=000000)](https://packagist.org/packages/resend/laravel)
 [![License](https://img.shields.io/github/license/jayanratna/resend-laravel?color=9cf&style=for-the-badge&labelColor=000000)](https://github.com/jayanratna/resend-laravel/blob/main/LICENSE)
 
 ---
