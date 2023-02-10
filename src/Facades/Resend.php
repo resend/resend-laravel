@@ -4,6 +4,9 @@ namespace Resend\Laravel\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
+/**
+ * @method static Resend\Responses\Email\EmailSent sendEmail(array $parameters)
+ */
 final class Resend extends Facade
 {
     /**
