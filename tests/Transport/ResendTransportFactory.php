@@ -31,8 +31,9 @@ test('send', function () {
 
     $client = mock(Client::class)->shouldReceive('sendEmail')
         ->once()
-        ->with([])
-        ->andReturn($resendResult)
+        ->with(Mockery::on(function ($arg) {
+            return $arg['from'] === 'myself@example.com';
+        }))->andReturn($resendResult)
         ->getMock();
 
     (new ResendTransportFactory($client))->send($message);
