@@ -1,27 +1,16 @@
 <?php
 
-use Illuminate\Config\Repository;
 use Resend\Client;
 use Resend\Laravel\ResendServiceProvider;
 
-it('binds the client on the container', function () {
-    $app = app();
+it('requires an API key', function () {
+    app()->get('resend');
+})->throws(InvalidArgumentException::class);
 
-    $app->bind('config', fn () => new Repository([
-        'resend' => [
-            'api_key' => 'test',
-        ],
-    ]));
+it('provides', function () {
+    $provider = app()->resolveProvider(ResendServiceProvider::class);
 
-    (new ResendServiceProvider($app))->register();
-
-    expect($app->get(Client::class))->toBeInstanceOf(Client::class);
-});
-
-it('provides services', function () {
-    $app = app();
-
-    $provides = (new ResendServiceProvider($app))->provides();
+    $provides = $provider->provides();
 
     expect($provides)->toBe([
         Client::class,

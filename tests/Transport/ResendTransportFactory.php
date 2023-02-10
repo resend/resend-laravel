@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Config\Repository;
 use Illuminate\Mail\MailManager;
 use Resend\Client;
 use Resend\Laravel\Transport\ResendTransportFactory;
@@ -10,13 +9,15 @@ use Symfony\Component\Mime\Email;
 test('get transport', function () {
     $app = app();
 
-    $app->bind('config', fn () => new Repository([
-        'resend' => [
-            'api_key' => 'test',
-        ],
-    ]));
+    $app['config']->set('resend', [
+        'api_key' => 'test',
+    ]);
 
-    $manager = new MailManager($app);
+    $manager = $app->get(MailManager::class);
+
+    $transport = $manager->createSymfonyTransport(['transport' => 'resend']);
+
+    expect((string) $transport)->toBe('resend');
 });
 
 test('send', function () {
@@ -40,3 +41,18 @@ test('send', function () {
 
     (new ResendTransportFactory($client))->send($message);
 });
+
+test('can handle exceptions', function () {
+    $message = (new Email())
+        ->subject('Foo Subject')
+        ->text('Bar body')
+        ->sender('myself@example.com')
+        ->bcc('you@example.com');
+
+    $client = mock(Client::class)->shouldReceive('sendEmail')
+        ->once()
+        ->andThrow(Exception::class)
+        ->getMock();
+
+    (new ResendTransportFactory($client))->send($message);
+})->throws(Exception::class);
