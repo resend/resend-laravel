@@ -32,7 +32,9 @@ test('send', function () {
     $client = mock(Client::class)->shouldReceive('sendEmail')
         ->once()
         ->with(Mockery::on(function ($arg) {
-            return $arg['from'] === 'myself@example.com';
+            return $arg['from'] === 'myself@example.com' &&
+                $arg['to'] === 'me@example.com' &&
+                $arg['bcc'] === 'you@example.com';
         }))->andReturn($resendResult)
         ->getMock();
 
