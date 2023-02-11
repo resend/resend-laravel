@@ -1,15 +1,14 @@
 <?php
 
 use Resend\Client;
+use Resend\Laravel\Facades\Resend;
 
 it('resolves Resend client', function () {
     $app = app();
 
-    $app['config']->set('resend', [
+    $app->get('config')->set('resend', [
         'api_key' => 'test',
     ]);
 
-    $resend = $app->get('resend');
-
-    expect($resend)->toBeInstanceOf(Client::class);
+    expect(Resend::getFacadeRoot())->toBeInstanceOf(Client::class);
 });
