@@ -3,7 +3,7 @@
 use Illuminate\Mail\MailManager;
 use Resend\Client;
 use Resend\Laravel\Transport\ResendTransportFactory;
-use Resend\Responses\Email\EmailSent;
+use Resend\Responses\Email\Sent;
 use Symfony\Component\Mime\Email;
 
 test('get transport', function () {
@@ -28,7 +28,7 @@ test('send', function () {
         ->to('me@example.com')
         ->bcc('you@example.com');
 
-    $resendResult = new EmailSent('id', 'myself@example.com', 'me@example.com');
+    $resendResult = new Sent('id', 'myself@example.com', 'me@example.com');
 
     $client = mock(Client::class)->shouldReceive('sendEmail')
         ->once()
