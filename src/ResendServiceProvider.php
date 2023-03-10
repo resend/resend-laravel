@@ -4,9 +4,9 @@ namespace Resend\Laravel;
 
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\ServiceProvider;
-use InvalidArgumentException;
 use Resend;
 use Resend\Client;
+use Resend\Laravel\Exceptions\ApiKeyIsMissing;
 use Resend\Laravel\Transport\ResendTransportFactory;
 
 final class ResendServiceProvider extends ServiceProvider
@@ -51,7 +51,7 @@ final class ResendServiceProvider extends ServiceProvider
             $apiKey = config('resend.api_key');
 
             if (! is_string($apiKey)) {
-                throw new InvalidArgumentException('API key missing');
+                throw ApiKeyIsMissing::create();
             }
 
             return Resend::client($apiKey);
