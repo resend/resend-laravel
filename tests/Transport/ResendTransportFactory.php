@@ -28,7 +28,7 @@ test('send', function () {
         ->to('me@example.com')
         ->bcc('you@example.com');
 
-    $resendResult = new Sent('id', 'myself@example.com', 'me@example.com');
+    $resendResult = new Sent('id', 'myself@example.com', 'me@example.com', '2022-07-25');
 
     $client = mock(Client::class)->shouldReceive('sendEmail')
         ->once()

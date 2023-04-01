@@ -18,7 +18,6 @@ class WebhookController extends Controller
     {
         $payload = json_decode($request->getContent(), true);
         $method = 'handle' . Str::studly(str_replace('.', '_', $payload['type']));
-        dump($method);
 
         WebhookReceived::dispatch($payload);
 
@@ -31,6 +30,11 @@ class WebhookController extends Controller
         }
 
         return $this->missingMethod($payload);
+    }
+
+    protected function handleEmailDeliveryDelayed(array $payload): Response
+    {
+        return $this->successMethod();
     }
 
     /**

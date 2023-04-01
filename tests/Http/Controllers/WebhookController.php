@@ -36,8 +36,8 @@ class WebhookControllerStub extends Controller
         //
     }
 
-    public function handleEmailDeliveryDelayed()
+    public function handleEmailDeliveryDelayed(array $payload): Response
     {
-        return new Response();
+        return new Response('Webhook handled', 200);
     }
 }
