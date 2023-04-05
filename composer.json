@@ -2,6 +2,7 @@
     "name": "resend/resend-laravel",
     "description": "Resend for Laravel",
     "keywords": ["php", "resend", "laravel", "sdk", "api", "client"],
+    "homepage": "https://resend.com/",
     "license": "MIT",
     "authors": [
         {

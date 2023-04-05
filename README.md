@@ -1,8 +1,8 @@
 # Resend for Laravel
 
 [![Tests](https://img.shields.io/github/actions/workflow/status/jayanratna/resend-laravel/tests.yml?label=tests&style=for-the-badge&labelColor=000000)](https://github.com/jayanratna/resend-laravel/actions/workflows/tests.yml)
-[![Packagist Downloads](https://img.shields.io/packagist/dt/resend/laravel?style=for-the-badge&labelColor=000000)](https://packagist.org/packages/resend/laravel)
-[![Packagist Version](https://img.shields.io/packagist/v/resend/laravel?style=for-the-badge&labelColor=000000)](https://packagist.org/packages/resend/laravel)
+[![Packagist Downloads](https://img.shields.io/packagist/dt/resend/resend-laravel?style=for-the-badge&labelColor=000000)](https://packagist.org/packages/resend/resend-laravel)
+[![Packagist Version](https://img.shields.io/packagist/v/resend/resend-laravel?style=for-the-badge&labelColor=000000)](https://packagist.org/packages/resend/resend-laravel)
 [![License](https://img.shields.io/github/license/jayanratna/resend-laravel?color=9cf&style=for-the-badge&labelColor=000000)](https://github.com/jayanratna/resend-laravel/blob/main/LICENSE)
 
 ---
@@ -16,7 +16,7 @@ Provides Resend integration for Laravel and Symfony Mailer.
 First install Resend for Laravel via the [Composer](https://getcomposer.org/) package manager:
 
 ```bash
-composer require resend/laravel
+composer require resend/resend-laravel
 ```
 
 Next, you should configure your [Resend API key](https://resend.com/api-keys) in your application's `.env` file:
