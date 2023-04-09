@@ -9,9 +9,14 @@
 
 Provides Resend integration for Laravel and Symfony Mailer.
 
-## Getting started
-
 > **Requires [PHP 8.1+](https://php.net/releases/)**
+
+## Contents
+
+- [Getting started](#getting-started)
+  - [Using Resend's Laravel mailer](#using-resends-laravel-mailer)
+
+## Getting started
 
 First install Resend for Laravel via the [Composer](https://getcomposer.org/) package manager:
 
@@ -36,4 +41,23 @@ Resend::sendEmail([
     'subject' => 'hello world',
     'text' => 'it works!',
 ]);
+```
+
+### Using Resend's Laravel mailer
+
+Resend for Laravel comes bundled with a Laravel mailer to make it easier to send emails. To start using the Resend mail transport, first create a new mailer definition within your application's `config/mail.php` configuration file:
+
+```php
+'resend' => [
+    'transport' => 'resend',
+],
+```
+
+> **Note**
+> The Resend mailer will use the `RESEND_API_KEY` in your application's `.env` file.
+
+Finally, update the `MAIL_MAILER` environment variable to use `resend`:
+
+```ini
+MAIL_MAILER=resend
 ```
