@@ -48,4 +48,4 @@ jobs:
           composer update --no-interaction --prefer-dist --no-progress
 
       - name: Execute tests
-        run: vendor/bin/pest --verbose
+        run: vendor/bin/pest
