@@ -65,10 +65,10 @@ final class ResendServiceProvider extends ServiceProvider
      */
     protected function registerPublishing(): void
     {
-        if ($this->app->runningInConsole()) {
+        if (method_exists($this->app, 'runningInConsole') && $this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__ . '/../config/resend.php' => $this->app->configPath('resend.php'),
-            ]);
+            ], 'resend-config');
         }
     }
 
