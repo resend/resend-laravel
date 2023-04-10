@@ -12,14 +12,12 @@
     ],
     "require": {
         "php": "^8.1.0",
-        "illuminate/contracts": "^9.21|^10.0",
-        "illuminate/support": "^9.21|^10.0",
         "resend/resend-php": "^0.3",
+        "laravel/framework": "^9.0|^10.0",
         "symfony/mailer": "^6.2"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.14",
-        "orchestra/testbench": "^7.22|^8.0",
         "pestphp/pest": "^2.0",
         "pestphp/pest-plugin-mock": "^2.0"
     },

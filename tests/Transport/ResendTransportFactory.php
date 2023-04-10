@@ -1,7 +1,9 @@
 <?php
 
+use Illuminate\Config\Repository;
 use Illuminate\Mail\MailManager;
 use Resend\Client;
+use Resend\Laravel\ResendServiceProvider;
 use Resend\Laravel\Transport\ResendTransportFactory;
 use Resend\Responses\Email\Sent;
 use Symfony\Component\Mime\Email;
@@ -9,11 +11,21 @@ use Symfony\Component\Mime\Email;
 test('get transport', function () {
     $app = app();
 
-    $app['config']->set('resend', [
-        'api_key' => 'test',
-    ]);
+    $app->bind('config', fn () => new Repository([
+        'resend' => [
+            'api_key' => 'test',
+        ],
+    ]));
 
-    $manager = $app->get(MailManager::class);
+    $app->singleton('mail.manager', function ($app) {
+        return new MailManager($app);
+    });
+
+    $provider = new ResendServiceProvider($app);
+    $provider->register();
+    $provider->boot();
+
+    $manager = $app->get('mail.manager');
 
     $transport = $manager->createSymfonyTransport(['transport' => 'resend']);
 
