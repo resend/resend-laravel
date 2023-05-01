@@ -3,7 +3,7 @@
 namespace Resend\Laravel\Transport;
 
 use Exception;
-use Resend\Client;
+use Resend\Contracts\Client;
 use Symfony\Component\Mailer\Envelope;
 use Symfony\Component\Mailer\SentMessage;
 use Symfony\Component\Mailer\Transport\AbstractTransport;
@@ -32,7 +32,7 @@ class ResendTransportFactory extends AbstractTransport
         $envelope = $message->getEnvelope();
 
         try {
-            $result = $this->resend->sendEmail([
+            $result = $this->resend->emails->send([
                 'from' => $envelope->getSender()->toString(),
                 'to' => implode(',', $this->stringifyAddresses($this->getRecipients($email, $envelope))),
                 'subject' => $email->getSubject(),
