@@ -35,7 +35,7 @@ Finally, you may use the `Resend` facade to access the Resend API:
 ```php
 use Resend\Laravel\Facades\Resend;
 
-Resend::sendEmail([
+Resend::emails()->send([
     'from' => 'onboarding@resend.dev',
     'to' => 'user@gmail.com',
     'subject' => 'hello world',
