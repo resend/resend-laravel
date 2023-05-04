@@ -7,10 +7,11 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Resend;
 use Resend\Client;
+use Resend\Contracts\Client as ClientContract;
 use Resend\Laravel\Exceptions\ApiKeyIsMissing;
 use Resend\Laravel\Transport\ResendTransportFactory;
 
-final class ResendServiceProvider extends ServiceProvider
+class ResendServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.
@@ -49,7 +50,7 @@ final class ResendServiceProvider extends ServiceProvider
      */
     protected function bindResendClient(): void
     {
-        $this->app->singleton(Client::class, static function (): Client {
+        $this->app->singleton(ClientContract::class, static function (): Client {
             $apiKey = config('resend.api_key');
 
             if (! is_string($apiKey)) {
@@ -59,7 +60,8 @@ final class ResendServiceProvider extends ServiceProvider
             return Resend::client($apiKey);
         });
 
-        $this->app->alias(Client::class, 'resend');
+        $this->app->alias(ClientContract::class, 'resend');
+        $this->app->alias(ClientContract::class, Client::class);
     }
 
     /**

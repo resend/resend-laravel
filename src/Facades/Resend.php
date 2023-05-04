@@ -3,12 +3,27 @@
 namespace Resend\Laravel\Facades;
 
 use Illuminate\Support\Facades\Facade;
+use Resend\Service\ApiKey;
+use Resend\Service\Domain;
+use Resend\Service\Email;
 
-/**
- * @method static Resend\Responses\Email\EmailSent sendEmail(array $parameters)
- */
-final class Resend extends Facade
+class Resend extends Facade
 {
+    public static function apiKeys(): ApiKey
+    {
+        return static::getFacadeRoot()->apiKeys;
+    }
+
+    public static function domains(): Domain
+    {
+        return static::getFacadeRoot()->domains;
+    }
+
+    public static function emails(): Email
+    {
+        return static::getFacadeRoot()->emails;
+    }
+
     /**
      * Get the registered name of the component.
      */
