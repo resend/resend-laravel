@@ -40,4 +40,20 @@ return [
 
     'path' => env('RESEND_PATH', 'resend'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Resend Webhooks
+    |--------------------------------------------------------------------------
+    |
+    | Your Resend webhook secret is used to prevent unauthorized requestes to
+    | your Resend webhook handling controllers. The tolerance setting will
+    | check the drift between the current time and the signed request's.
+    |
+    */
+
+    'webhook' => [
+        'secret' => env('RESEND_WEBHOOK_SECRET'),
+        'tolerance' => env('RESEND_WEBHOOK_TOLERANCE', 300),
+    ],
+
 ];
