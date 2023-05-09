@@ -43,7 +43,12 @@ test('send', function () {
         ->text('Test plain text body')
         ->html('<p>Test HTML body</p>');
 
-    $apiResponse = new Email([]);
+    $apiResponse = new Email([
+        'id' => '49a3999c-0ce1-4ea6-ab68-afcd6dc2e794',
+        'from' => 'from@example.com',
+        'to' => 'to@example.com',
+        'created_at' => '2022-07-25T00:28:32.493138+00:00',
+    ]);
 
     $this->client->emails
         ->shouldReceive('send')
