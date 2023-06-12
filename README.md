@@ -11,10 +11,12 @@ Provides Resend integration for Laravel and Symfony Mailer.
 
 > **Requires [PHP 8.1+](https://php.net/releases/)**
 
-## Contents
+## Examples
 
-- [Getting started](#getting-started)
-  - [Using Resend's Laravel mailer](#using-resends-laravel-mailer)
+Send an email with:
+
+* [Laravel](https://github.com/resendlabs/resend-laravel-example)
+* [PHP](https://github.com/resendlabs/resend-php-example)
 
 ## Getting started
 
