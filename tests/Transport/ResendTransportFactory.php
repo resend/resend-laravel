@@ -6,6 +6,7 @@ use Resend\Contracts\Client;
 use Resend\Email;
 use Resend\Laravel\Transport\ResendTransportFactory;
 use Resend\Service\Email as EmailService;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email as SymfonyEmail;
 
 beforeEach(function () {
@@ -35,7 +36,7 @@ test('constructor', function () {
 test('send', function () {
     $email = (new SymfonyEmail())
         ->from('from@example.com')
-        ->to('to@example.com')
+        ->to(new Address('to@example.com', 'Acme'))
         ->cc('cc@example.com')
         ->bcc('bcc@example.com')
         ->replyTo('reply-to@example.com')
@@ -55,8 +56,10 @@ test('send', function () {
         ->once()
         ->with(Mockery::on(function ($arg) {
             return $arg['from'] === 'from@example.com' &&
-                $arg['to'] === 'to@example.com' &&
-                $arg['bcc'] === 'bcc@example.com';
+                $arg['to'] === ['"Acme" <to@example.com>'] &&
+                $arg['cc'] === ['cc@example.com'] &&
+                $arg['bcc'] === ['bcc@example.com'] &&
+                $arg['reply_to'] === ['reply-to@example.com'];
         }))
         ->andReturn($apiResponse);
 
