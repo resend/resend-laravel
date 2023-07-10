@@ -34,11 +34,11 @@ class ResendTransportFactory extends AbstractTransport
         try {
             $result = $this->resend->emails->send([
                 'from' => $envelope->getSender()->toString(),
-                'to' => implode(',', $this->stringifyAddresses($this->getRecipients($email, $envelope))),
+                'to' => $this->stringifyAddresses($this->getRecipients($email, $envelope)),
                 'subject' => $email->getSubject(),
-                'bcc' => implode(',', $this->stringifyAddresses($email->getBcc())),
-                'cc' => implode(',', $this->stringifyAddresses($email->getCc())),
-                'reply_to' => implode(',', $this->stringifyAddresses($email->getReplyTo())),
+                'bcc' => $this->stringifyAddresses($email->getBcc()),
+                'cc' => $this->stringifyAddresses($email->getCc()),
+                'reply_to' => $this->stringifyAddresses($email->getReplyTo()),
                 'text' => $email->getTextBody(),
                 'html' => $email->getHtmlBody(),
             ]);
