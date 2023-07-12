@@ -31,16 +31,27 @@ class ResendTransportFactory extends AbstractTransport
         $email = MessageConverter::toEmail($message->getOriginalMessage());
         $envelope = $message->getEnvelope();
 
+        $headers = [];
+        $headersToBypass = ['from', 'to', 'cc', 'bcc', 'subject', 'content-type', 'sender', 'reply-to'];
+        foreach ($email->getHeaders()->all() as $name => $header) {
+            if (in_array($name, $headersToBypass, true)) {
+                continue;
+            }
+
+            $headers[$header->getName()] = $header->getBodyAsString();
+        }
+
         try {
             $result = $this->resend->emails->send([
-                'from' => $envelope->getSender()->toString(),
-                'to' => $this->stringifyAddresses($this->getRecipients($email, $envelope)),
-                'subject' => $email->getSubject(),
                 'bcc' => $this->stringifyAddresses($email->getBcc()),
                 'cc' => $this->stringifyAddresses($email->getCc()),
-                'reply_to' => $this->stringifyAddresses($email->getReplyTo()),
-                'text' => $email->getTextBody(),
+                'from' => $envelope->getSender()->toString(),
+                'headers' => $headers,
                 'html' => $email->getHtmlBody(),
+                'reply_to' => $this->stringifyAddresses($email->getReplyTo()),
+                'subject' => $email->getSubject(),
+                'text' => $email->getTextBody(),
+                'to' => $this->stringifyAddresses($this->getRecipients($email, $envelope)),
             ]);
         } catch (Exception $exception) {
             throw new Exception(
