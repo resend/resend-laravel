@@ -13,7 +13,7 @@
     "require": {
         "php": "^8.1",
         "illuminate/support": "^9.21|^10.0",
-        "resend/resend-php": "^0.7.0",
+        "resend/resend-php": "^0.7.1",
         "symfony/mailer": "^6.2"
     },
     "require-dev": {
