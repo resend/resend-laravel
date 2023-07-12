@@ -15,7 +15,7 @@ beforeEach(function () {
     $this->transporter = new ResendTransportFactory($this->client);
 });
 
-test('get transport', function () {
+it('can get transport', function () {
     $app = app();
 
     $app['config']->set('resend', [
@@ -33,7 +33,7 @@ test('constructor', function () {
     expect($this->transporter)->toBeInstanceOf(ResendTransportFactory::class);
 });
 
-test('can send', function () {
+it('can send', function () {
     $email = (new SymfonyEmail())
         ->from('from@example.com')
         ->to(new Address('to@example.com', 'Acme'))
@@ -66,7 +66,7 @@ test('can send', function () {
     $this->transporter->send($email);
 });
 
-test('can send to multiple recipients', function () {
+it('can send to multiple recipients', function () {
     $email = (new SymfonyEmail())
         ->from('from@example.com')
         ->to(new Address('to@example.com', 'Acme'), new Address('sales@example.com', 'Acme Sales'))
@@ -93,7 +93,33 @@ test('can send to multiple recipients', function () {
     $this->transporter->send($email);
 });
 
-test('can handle exceptions', function () {
+it('can send headers', function () {
+    $email = (new SymfonyEmail())
+        ->from('from@example.com')
+        ->to(new Address('to@example.com', 'Acme'))
+        ->subject('Test Subject')
+        ->text('Test plain text body');
+    $email->getHeaders()->addHeader('X-Entity-Ref-ID', '123456789');
+
+    $apiResponse = new Email([
+        'id' => '49a3999c-0ce1-4ea6-ab68-afcd6dc2e794',
+    ]);
+
+    $this->client->emails
+        ->shouldReceive('send')
+        ->once()
+        ->with(Mockery::on(function ($arg) {
+            return $arg['from'] === 'from@example.com' &&
+                $arg['to'] === ['"Acme" <to@example.com>'] &&
+                $arg['subject'] === 'Test Subject' &&
+                array_key_exists('X-Entity-Ref-ID', $arg['headers']);
+        }))
+        ->andReturn($apiResponse);
+
+    $this->transporter->send($email);
+});
+
+it('can handle exceptions', function () {
     $email = (new SymfonyEmail())
         ->from('from@example.com')
         ->to('to@example.com')
