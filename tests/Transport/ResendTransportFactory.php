@@ -134,3 +134,40 @@ it('can handle exceptions', function () {
 
     $this->transporter->send($email);
 })->throws(Exception::class);
+
+it('can set the X-Resend-Email-ID', function () {
+    $email = (new SymfonyEmail())
+        ->from('from@example.com')
+        ->to(new Address('to@example.com', 'Acme'))
+        ->subject('Test Subject')
+        ->text('Test plain text body');
+
+    $apiResponse = new Email([
+        'id' => '49a3999c-0ce1-4ea6-ab68-afcd6dc2e794',
+    ]);
+
+    $this->client->emails
+        ->shouldReceive('send')
+        ->once()
+        ->with(Mockery::on(function ($arg) {
+            return $arg['from'] === 'from@example.com' &&
+                $arg['to'] === ['"Acme" <to@example.com>'] &&
+                $arg['subject'] === 'Test Subject';
+        }))
+        ->andReturn($apiResponse);
+
+    $message = $this->transporter->send($email);
+
+    // Test the header is set for each message.
+    expect($message->getOriginalMessage()
+        ->getHeaders()
+        ->has('X-Resend-Email-ID')
+    )->toBeTrue();
+
+    // Test the header value is correct
+    expect($message->getOriginalMessage()
+        ->getHeaders()
+        ->get('X-Resend-Email-ID')
+        ->getValue()
+    )->toBe('49a3999c-0ce1-4ea6-ab68-afcd6dc2e794');
+});
