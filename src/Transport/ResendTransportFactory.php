@@ -60,6 +60,10 @@ class ResendTransportFactory extends AbstractTransport
                 $exception
             );
         }
+
+        $messageId = $result->id;
+
+        $email->getHeaders()->addHeader('X-Resend-Email-ID', $messageId);
     }
 
     /**
