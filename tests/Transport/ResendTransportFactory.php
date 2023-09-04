@@ -119,6 +119,40 @@ it('can send headers', function () {
     $this->transporter->send($email);
 });
 
+it('can send attachments', function () {
+    $email = (new SymfonyEmail())
+        ->from('from@example.com')
+        ->to(new Address('to@example.com', 'Acme'))
+        ->subject('Test Subject')
+        ->text('Test plain text body');
+
+    $email->attach(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nunc augue, consectetur id neque eget, varius dignissim diam.',
+        'lorem-ipsum.txt',
+    );
+
+    $apiResponse = new Email([
+        'id' => '49a3999c-0ce1-4ea6-ab68-afcd6dc2e794',
+    ]);
+
+    $this->client->emails
+        ->shouldReceive('send')
+        ->once()
+        ->with(Mockery::on(function ($arg) {
+            return $arg['from'] === 'from@example.com' &&
+                $arg['to'] === ['"Acme" <to@example.com>'] &&
+                $arg['subject'] === 'Test Subject' &&
+                ! empty($arg['attachments']) &&
+                array_key_exists('filename', $arg['attachments'][0]) &&
+                array_key_exists('content', $arg['attachments'][0]) &&
+                $arg['attachments'][0]['filename'] === 'lorem-ipsum.txt' &&
+                $arg['attachments'][0]['content'] === 'TG9yZW0gaXBzdW0gZG9sb3Igc2l0IGFtZXQsIGNvbnNlY3RldHVyIGFkaXBpc2NpbmcgZWxpdC4gQWVuZWFuIG51bmMgYXVndWUsIGNvbnNlY3RldHVyIGlkIG5lcXVlIGVnZXQsIHZhcml1cyBkaWduaXNzaW0gZGlhbS4=';
+        }))
+        ->andReturn($apiResponse);
+
+    $this->transporter->send($email);
+});
+
 it('can handle exceptions', function () {
     $email = (new SymfonyEmail())
         ->from('from@example.com')

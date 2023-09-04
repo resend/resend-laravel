@@ -41,6 +41,21 @@ class ResendTransportFactory extends AbstractTransport
             $headers[$header->getName()] = $header->getBodyAsString();
         }
 
+        $attachments = [];
+        if ($email->getAttachments()) {
+            foreach ($email->getAttachments() as $attachment) {
+                $headers = $attachment->getPreparedHeaders();
+                $filename = $headers->getHeaderParameter('Content-Disposition', 'filename');
+
+                $item = [
+                    'content' => str_replace("\r\n", '', $attachment->bodyToString()),
+                    'filename' => $filename,
+                ];
+
+                $attachments[] = $item;
+            }
+        }
+
         try {
             $result = $this->resend->emails->send([
                 'bcc' => $this->stringifyAddresses($email->getBcc()),
@@ -52,6 +67,7 @@ class ResendTransportFactory extends AbstractTransport
                 'subject' => $email->getSubject(),
                 'text' => $email->getTextBody(),
                 'to' => $this->stringifyAddresses($this->getRecipients($email, $envelope)),
+                'attachments' => $attachments,
             ]);
         } catch (Exception $exception) {
             throw new Exception(
