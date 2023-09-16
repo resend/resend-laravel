@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
 use Resend\Laravel\Events\EmailBounced;
 use Resend\Laravel\Events\EmailClicked;
@@ -11,14 +10,6 @@ use Resend\Laravel\Events\EmailOpened;
 use Resend\Laravel\Events\EmailSent;
 use Resend\Laravel\Http\Controllers\WebhookController as Controller;
 
-function webhookRequest(string $event): Request
-{
-    return Request::create('/', 'POST', [], [], [], [], json_encode([
-        'id' => 're_evt_123456789',
-        'type' => $event,
-    ]));
-}
-
 test('correct methods are called and handled based on resend webhook event', function (string $name, string $event) {
     $request = webhookRequest($name);
 
@@ -26,7 +17,7 @@ test('correct methods are called and handled based on resend webhook event', fun
         $event,
     ]);
 
-    $response = (new WebhookControllerStub)->handleWebhook($request);
+    $response = (new Controller)->handleWebhook($request);
 
     Event::assertDispatched($event, function ($e) use ($request) {
         return $request->getContent() == json_encode($e->payload);
@@ -49,7 +40,7 @@ test('normal response is returned if method is missing', function () {
 
     Event::fake();
 
-    $response = (new WebhookControllerStub)->handleWebhook($request);
+    $response = (new Controller)->handleWebhook($request);
 
     Event::assertNothingDispatched();
 
@@ -57,10 +48,18 @@ test('normal response is returned if method is missing', function () {
         ->and($response->getContent())->toBeEmpty();
 });
 
-class WebhookControllerStub extends Controller
-{
-    public function __construct()
-    {
-        // Don't call parent contructor.
-    }
-}
+test('verify webhook signature middleware is called when webhook secret is set', function () {
+    config(['resend.webhook.secret' => 'secret']);
+    config(['resend.webhook.tolerance' => 300]);
+
+    Event::fake([
+        EmailDelivered::class,
+    ]);
+
+    $this->postJson('/resend/webhook', [
+        'id' => 're_evt_123456789',
+        'type' => 'email.delivered',
+    ])->assertForbidden();
+
+    Event::assertNothingDispatched();
+});

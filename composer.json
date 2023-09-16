@@ -13,7 +13,7 @@
     "require": {
         "php": "^8.1",
         "illuminate/support": "^9.21|^10.0",
-        "resend/resend-php": "dev-main",
+        "resend/resend-php": "^0.8.0",
         "symfony/mailer": "^6.2"
     },
     "require-dev": {
@@ -22,12 +22,6 @@
         "orchestra/testbench": "^7.22|^8.0",
         "pestphp/pest": "^1.22"
     },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../resend-php"
-        }
-    ],
     "autoload": {
         "psr-4": {
             "Resend\\Laravel\\": "src/"
