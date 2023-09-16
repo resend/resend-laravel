@@ -12,10 +12,21 @@ use Resend\Laravel\Events\EmailDelivered;
 use Resend\Laravel\Events\EmailDeliveryDelayed;
 use Resend\Laravel\Events\EmailOpened;
 use Resend\Laravel\Events\EmailSent;
+use Resend\Laravel\Http\Middleware\VerifyWebhookSignature;
 use Symfony\Component\HttpFoundation\Response;
 
 class WebhookController extends Controller
 {
+    /**
+     * Create a new webhook controller instance.
+     */
+    public function __construct()
+    {
+        if (config('resend.webhook.secret')) {
+            $this->middleware(VerifyWebhookSignature::class);
+        }
+    }
+
     /**
      * Handle a Resend webhook call.
      */
