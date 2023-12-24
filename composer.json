@@ -7,7 +7,7 @@
     "authors": [
         {
             "name": "Resend and contributors",
-            "homepage": "https://github.com/resendlabs/resend-laravel/contributors"
+            "homepage": "https://github.com/resend/resend-laravel/contributors"
         }
     ],
     "require": {
