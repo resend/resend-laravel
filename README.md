@@ -1,9 +1,9 @@
 # Resend for Laravel
 
-[![Tests](https://img.shields.io/github/actions/workflow/status/resendlabs/resend-laravel/tests.yml?label=tests&style=for-the-badge&labelColor=000000)](https://github.com/resendlabs/resend-laravel/actions/workflows/tests.yml)
+[![Tests](https://img.shields.io/github/actions/workflow/status/resend/resend-laravel/tests.yml?label=tests&style=for-the-badge&labelColor=000000)](https://github.com/resend/resend-laravel/actions/workflows/tests.yml)
 [![Packagist Downloads](https://img.shields.io/packagist/dt/resend/resend-laravel?style=for-the-badge&labelColor=000000)](https://packagist.org/packages/resend/resend-laravel)
 [![Packagist Version](https://img.shields.io/packagist/v/resend/resend-laravel?style=for-the-badge&labelColor=000000)](https://packagist.org/packages/resend/resend-laravel)
-[![License](https://img.shields.io/github/license/resendlabs/resend-laravel?color=9cf&style=for-the-badge&labelColor=000000)](https://github.com/resendlabs/resend-laravel/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/resend/resend-laravel?color=9cf&style=for-the-badge&labelColor=000000)](https://github.com/resend/resend-laravel/blob/main/LICENSE)
 
 ---
 
@@ -15,8 +15,8 @@ Provides Resend integration for Laravel and Symfony Mailer.
 
 Send an email with:
 
-* [Laravel](https://github.com/resendlabs/resend-laravel-example)
-* [PHP](https://github.com/resendlabs/resend-php-example)
+* [Laravel](https://github.com/resend/resend-laravel-example)
+* [PHP](https://github.com/resend/resend-php-example)
 
 ## Getting started
 
