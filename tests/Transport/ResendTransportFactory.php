@@ -6,6 +6,7 @@ use Resend\Contracts\Client;
 use Resend\Email;
 use Resend\Laravel\Transport\ResendTransportFactory;
 use Resend\Service\Email as EmailService;
+use Symfony\Component\Mailer\Exception\TransportException;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email as SymfonyEmail;
 
@@ -164,10 +165,10 @@ it('can handle exceptions', function () {
     $this->client->emails
         ->shouldReceive('send')
         ->once()
-        ->andThrow(Exception::class);
+        ->andThrow(Exception::class, 'Failed');
 
     $this->transporter->send($email);
-})->throws(Exception::class);
+})->throws(TransportException::class, 'Request to the Resend API failed. Reason: Failed');
 
 it('can set the X-Resend-Email-ID', function () {
     $email = (new SymfonyEmail())
