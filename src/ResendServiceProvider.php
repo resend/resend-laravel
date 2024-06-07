@@ -51,7 +51,7 @@ class ResendServiceProvider extends ServiceProvider
     protected function bindResendClient(): void
     {
         $this->app->singleton(ClientContract::class, static function (): Client {
-            $apiKey = config('resend.api_key');
+            $apiKey = config('resend.api_key') ?? config('services.resend.key');
 
             if (! is_string($apiKey)) {
                 throw ApiKeyIsMissing::create();
