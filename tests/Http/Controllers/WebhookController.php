@@ -63,3 +63,16 @@ test('verify webhook signature middleware is called when webhook secret is set',
 
     Event::assertNothingDispatched();
 });
+
+// This function creates a new Request object with a JSON body that does not include the fields expected by your controller.
+function invalidWebhookRequest() {
+    return new Illuminate\Http\Request([], [], [], [], [], ['CONTENT_TYPE' => 'application/json'], json_encode(['invalid' => 'data']));
+}
+
+test('it returns an error response for invalid payload', function() {
+    $request = invalidWebhookRequest();
+
+    $response = (new Controller)->handleWebhook($request);
+
+    expect($response->getStatusCode())->toBe(400);
+});
