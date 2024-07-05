@@ -33,6 +33,11 @@ class WebhookController extends Controller
     public function handleWebhook(Request $request): Response
     {
         $payload = json_decode($request->getContent(), true);
+
+        if(is_null($payload) || !isset($payload['type'])) {
+            return new Response('Invalid payload', 400);
+        }
+
         $method = 'handle' . Str::studly(str_replace('.', '_', $payload['type']));
 
         if (method_exists($this, $method)) {
