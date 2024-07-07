@@ -46,3 +46,16 @@ it('throws an exception when the secret cannot be verified', function () {
         return new Response('OK');
     });
 })->throws(AccessDeniedHttpException::class, 'Message timestamp too new');
+
+test('it rejects a request with invalid signature', function () {
+    $request = Request::create('/webhook', 'POST', [], [], [], [], json_encode(['data' => 'test']));
+    $request->headers->set('Signature', 'invalid_signature');
+
+    $middleware = new VerifyWebhookSignature();
+
+    $this->expectException(AccessDeniedHttpException::class);
+
+    $middleware->handle($request, function ($req) {
+        return new Response('OK', 200);
+    });
+});

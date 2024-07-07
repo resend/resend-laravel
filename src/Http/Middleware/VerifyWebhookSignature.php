@@ -19,9 +19,7 @@ class VerifyWebhookSignature
     public function handle(Request $request, Closure $next)
     {
         try {
-            $headers = collect($request->headers->all())->transform(function ($item) {
-                return $item[0];
-            })->all();
+            $headers = $this->getTransformedHeaders($request);
 
             WebhookSignature::verify(
                 $request->getContent(),
@@ -35,4 +33,22 @@ class VerifyWebhookSignature
 
         return $next($request);
     }
+
+    /**
+     * Transform headers to a simple associative array.
+     * This method extracts the first value from each header and returns an array where each key is the header name and the associated value is that first header value
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return array
+     */
+
+     protected function getTransformedHeaders(Request $request): array
+     {
+         $headers = [];
+         foreach($request->headers->all() as $key => $value) {
+             $headers[$key] = $value[0];
+         }
+
+         return $headers;
+     }
 }
