@@ -13,7 +13,6 @@ class VerifyWebhookSignature
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
      * @param \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response) $next
      */
     public function handle(Request $request, Closure $next)
@@ -37,18 +36,14 @@ class VerifyWebhookSignature
     /**
      * Transform headers to a simple associative array.
      * This method extracts the first value from each header and returns an array where each key is the header name and the associated value is that first header value
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return array
      */
+    protected function getTransformedHeaders(Request $request): array
+    {
+        $headers = [];
+        foreach ($request->headers->all() as $key => $value) {
+            $headers[$key] = $value[0];
+        }
 
-     protected function getTransformedHeaders(Request $request): array
-     {
-         $headers = [];
-         foreach($request->headers->all() as $key => $value) {
-             $headers[$key] = $value[0];
-         }
-
-         return $headers;
-     }
+        return $headers;
+    }
 }

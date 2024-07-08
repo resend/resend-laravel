@@ -34,7 +34,7 @@ class WebhookController extends Controller
     {
         $payload = json_decode($request->getContent(), true);
 
-        if(is_null($payload) || !isset($payload['type'])) {
+        if (is_null($payload) || ! isset($payload['type'])) {
             return new Response('Invalid payload', 400);
         }
 

@@ -51,6 +51,7 @@ class ResendTransportFactory extends AbstractTransport
                 $item = [
                     'content' => str_replace("\r\n", '', $attachment->bodyToString()),
                     'filename' => $filename,
+                    'content_type' => $headers->get('Content-Type')->getBody(),
                 ];
 
                 $attachments[] = $item;
