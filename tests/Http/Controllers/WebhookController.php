@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Event;
+use Resend\Laravel\Events\ContactCreated;
+use Resend\Laravel\Events\ContactDeleted;
+use Resend\Laravel\Events\ContactUpdated;
 use Resend\Laravel\Events\EmailBounced;
 use Resend\Laravel\Events\EmailClicked;
 use Resend\Laravel\Events\EmailComplained;
@@ -26,6 +29,9 @@ test('correct methods are called and handled based on resend webhook event', fun
     expect($response->getStatusCode())->toBe(200)
         ->and($response->getContent())->toBe('Webhook handled');
 })->with([
+    ['contact.created', ContactCreated::class],
+    ['contact.deleted', ContactDeleted::class],
+    ['contact.updated', ContactUpdated::class],
     ['email.bounced', EmailBounced::class],
     ['email.clicked', EmailClicked::class],
     ['email.complained', EmailComplained::class],
