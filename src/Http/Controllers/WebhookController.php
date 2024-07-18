@@ -5,6 +5,9 @@ namespace Resend\Laravel\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
+use Resend\Laravel\Events\ContactCreated;
+use Resend\Laravel\Events\ContactDeleted;
+use Resend\Laravel\Events\ContactUpdated;
 use Resend\Laravel\Events\EmailBounced;
 use Resend\Laravel\Events\EmailClicked;
 use Resend\Laravel\Events\EmailComplained;
@@ -47,6 +50,36 @@ class WebhookController extends Controller
         }
 
         return $this->missingMethod($payload);
+    }
+
+    /**
+     * Handle contact created event.
+     */
+    protected function handleContactCreated(array $payload): Response
+    {
+        ContactCreated::dispatch($payload);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle contact deleted event.
+     */
+    protected function handleContactDeleted(array $payload): Response
+    {
+        ContactDeleted::dispatch($payload);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle contact updated event.
+     */
+    protected function handleContactUpdated(array $payload): Response
+    {
+        ContactUpdated::dispatch($payload);
+
+        return $this->successMethod();
     }
 
     /**
