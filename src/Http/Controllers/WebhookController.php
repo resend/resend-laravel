@@ -8,6 +8,9 @@ use Illuminate\Support\Str;
 use Resend\Laravel\Events\ContactCreated;
 use Resend\Laravel\Events\ContactDeleted;
 use Resend\Laravel\Events\ContactUpdated;
+use Resend\Laravel\Events\DomainCreated;
+use Resend\Laravel\Events\DomainDeleted;
+use Resend\Laravel\Events\DomainUpdated;
 use Resend\Laravel\Events\EmailBounced;
 use Resend\Laravel\Events\EmailClicked;
 use Resend\Laravel\Events\EmailComplained;
@@ -78,6 +81,36 @@ class WebhookController extends Controller
     protected function handleContactUpdated(array $payload): Response
     {
         ContactUpdated::dispatch($payload);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle domain created event.
+     */
+    protected function handleDomainCreated(array $payload): Response
+    {
+        DomainCreated::dispatch($payload);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle domain deleted event.
+     */
+    protected function handleDomainDeleted(array $payload): Response
+    {
+        DomainDeleted::dispatch($payload);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle domain updated event.
+     */
+    protected function handleDomainUpdated(array $payload): Response
+    {
+        DomainUpdated::dispatch($payload);
 
         return $this->successMethod();
     }
