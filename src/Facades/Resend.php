@@ -10,6 +10,16 @@ use Resend\Service\Contact;
 use Resend\Service\Domain;
 use Resend\Service\Email;
 
+/**
+ * @method static Contact contacts() Manage Resend contacts. <a href="https://resend.com/docs/dashboard/audiences/contacts">Contacts Docs</a>
+ * @method static Audience audiences() Manage Resend audiences. <a href="https://resend.com/docs/dashboard/audiences">Audience Docs</a>
+ * @method static Batch batch() Create and send Resend Batches.
+ * ...
+ * @see <a href="https://resend.com/docs/introduction">Resend Docs</a>
+ * @package resend-laravel
+ */
+
+
 class Resend extends Facade
 {
     public static function apiKeys(): ApiKey
@@ -25,20 +35,6 @@ class Resend extends Facade
     public static function emails(): Email
     {
         return static::getFacadeRoot()->emails;
-    }
-
-    public static function contacts(): Contact
-    {
-        return static::getFacadeRoot()->contacts;
-    }
-
-    public static function audiences(): Audience
-    {
-        return static::getFacadeRoot()->audiences;
-    }
-    public static function batch(): Batch
-    {
-        return static::getFacadeRoot()->batch;
     }
 
     /**
