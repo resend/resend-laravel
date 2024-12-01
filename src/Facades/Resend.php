@@ -3,7 +3,6 @@
 namespace Resend\Laravel\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Resend\Laravel\ResendServiceProvider;
 use Resend\Service\ApiKey;
 use Resend\Service\Audience;
 use Resend\Service\Batch;
@@ -17,9 +16,6 @@ use Resend\Service\Email;
  * @method static Contact contacts() Manage Resend contacts.
  * @method static Audience audiences() Manage Resend audiences through the Resend Email API.
  * @method static Batch batch() Create and send Resend Batches.
- * @method static ApiKey apiKeys() Create, remove or list API keys.
- * @method static Email emails() Manage emails through the Resend Email API.
- * @method static Domain domains() Manage domains through the Resend Email API.
  *
  * @package resend-laravel
  * @see <a href="https://resend.com/docs/introduction">Resend Docs</a>
@@ -27,8 +23,24 @@ use Resend\Service\Email;
  */
 
 
+
 class Resend extends Facade
 {
+    public static function apiKeys(): ApiKey
+    {
+        return static::getFacadeRoot()->apiKeys;
+    }
+
+    public static function domains(): Domain
+    {
+        return static::getFacadeRoot()->domains;
+    }
+
+    public static function emails(): Email
+    {
+        return static::getFacadeRoot()->emails;
+    }
+
     /**
      * Get the registered name of the component.
      */
