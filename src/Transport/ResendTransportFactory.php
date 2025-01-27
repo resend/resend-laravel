@@ -45,13 +45,13 @@ class ResendTransportFactory extends AbstractTransport
         $attachments = [];
         if ($email->getAttachments()) {
             foreach ($email->getAttachments() as $attachment) {
-                $headers = $attachment->getPreparedHeaders();
-                $filename = $headers->getHeaderParameter('Content-Disposition', 'filename');
+                $attachmentHeaders = $attachment->getPreparedHeaders();
+                $filename = $attachmentHeaders->getHeaderParameter('Content-Disposition', 'filename');
 
                 $item = [
                     'content' => str_replace("\r\n", '', $attachment->bodyToString()),
                     'filename' => $filename,
-                    'content_type' => $headers->get('Content-Type')->getBody(),
+                    'content_type' => $attachmentHeaders->get('Content-Type')->getBody(),
                 ];
 
                 $attachments[] = $item;
