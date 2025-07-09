@@ -9,8 +9,6 @@
 
 Provides Resend integration for Laravel and Symfony Mailer.
 
-> **Requires [PHP 8.1+](https://php.net/releases/)**
-
 ## Examples
 
 Send an email with:
