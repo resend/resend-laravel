@@ -188,7 +188,7 @@ it('can send inline attachments', function () {
                 array_key_exists('content_type', $arg['attachments'][0]) &&
                 $arg['attachments'][0]['filename'] === 'lorem-ipsum.txt' &&
                 $arg['attachments'][0]['content'] === 'TG9yZW0gaXBzdW0gZG9sb3Igc2l0IGFtZXQsIGNvbnNlY3RldHVyIGFkaXBpc2NpbmcgZWxpdC4gQWVuZWFuIG51bmMgYXVndWUsIGNvbnNlY3RldHVyIGlkIG5lcXVlIGVnZXQsIHZhcml1cyBkaWduaXNzaW0gZGlhbS4=' &&
-                $arg['attachments'][0]['inline_content_id'] === 'cid:lorem-ipsum.txt' &&
+                $arg['attachments'][0]['inline_content_id'] === 'lorem-ipsum.txt' &&
                 $arg['attachments'][0]['content_type'] === 'text/plain';
         }))
         ->andReturn($apiResponse);
