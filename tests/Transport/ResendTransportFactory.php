@@ -157,6 +157,45 @@ it('can send attachments', function () {
     $this->transporter->send($email);
 });
 
+it('can send inline attachments', function () {
+    $email = (new SymfonyEmail())
+        ->from('from@example.com')
+        ->to(new Address('to@example.com', 'Acme'))
+        ->subject('Test Subject')
+        ->text('Test plain text body');
+
+    $email->embed(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nunc augue, consectetur id neque eget, varius dignissim diam.',
+        'lorem-ipsum.txt',
+        'text/plain'
+    );
+
+    $apiResponse = new Email([
+        'id' => '49a3999c-0ce1-4ea6-ab68-afcd6dc2e794',
+    ]);
+
+    $this->client->emails
+        ->shouldReceive('send')
+        ->once()
+        ->with(Mockery::on(function ($arg) {
+            return $arg['from'] === 'from@example.com' &&
+                $arg['to'] === ['"Acme" <to@example.com>'] &&
+                $arg['subject'] === 'Test Subject' &&
+                ! empty($arg['attachments']) &&
+                array_key_exists('filename', $arg['attachments'][0]) &&
+                array_key_exists('content', $arg['attachments'][0]) &&
+                array_key_exists('inline_content_id', $arg['attachments'][0]) &&
+                array_key_exists('content_type', $arg['attachments'][0]) &&
+                $arg['attachments'][0]['filename'] === 'lorem-ipsum.txt' &&
+                $arg['attachments'][0]['content'] === 'TG9yZW0gaXBzdW0gZG9sb3Igc2l0IGFtZXQsIGNvbnNlY3RldHVyIGFkaXBpc2NpbmcgZWxpdC4gQWVuZWFuIG51bmMgYXVndWUsIGNvbnNlY3RldHVyIGlkIG5lcXVlIGVnZXQsIHZhcml1cyBkaWduaXNzaW0gZGlhbS4=' &&
+                $arg['attachments'][0]['inline_content_id'] === 'cid:lorem-ipsum.txt' &&
+                $arg['attachments'][0]['content_type'] === 'text/plain';
+        }))
+        ->andReturn($apiResponse);
+
+    $this->transporter->send($email);
+});
+
 it('can send calendar attachements', function () {
     $email = (new SymfonyEmail())
         ->from('from@example.com')

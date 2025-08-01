@@ -42,30 +42,6 @@ class ResendTransportFactory extends AbstractTransport
             $headers[$header->getName()] = $header->getBodyAsString();
         }
 
-        $attachments = [];
-        if ($email->getAttachments()) {
-            foreach ($email->getAttachments() as $attachment) {
-                $attachmentHeaders = $attachment->getPreparedHeaders();
-                $contentType = $attachmentHeaders->get('Content-Type')->getBody();
-
-                $filename = $attachmentHeaders->getHeaderParameter('Content-Disposition', 'filename');
-
-                if ($contentType == 'text/calendar') {
-                    $content = $attachment->getBody();
-                } else {
-                    $content = str_replace("\r\n", '', $attachment->bodyToString());
-                }
-
-                $item = [
-                    'content_type' => $contentType,
-                    'content' => $content,
-                    'filename' => $filename,
-                ];
-
-                $attachments[] = $item;
-            }
-        }
-
         try {
             $result = $this->resend->emails->send([
                 'bcc' => $this->stringifyAddresses($email->getBcc()),
@@ -77,7 +53,7 @@ class ResendTransportFactory extends AbstractTransport
                 'subject' => $email->getSubject(),
                 'text' => $email->getTextBody(),
                 'to' => $this->stringifyAddresses($this->getRecipients($email, $envelope)),
-                'attachments' => $attachments,
+                'attachments' => $this->getAttachments($email),
             ]);
         } catch (Exception $exception) {
             throw new TransportException(
@@ -100,6 +76,43 @@ class ResendTransportFactory extends AbstractTransport
         return array_filter($envelope->getRecipients(), function (Address $address) use ($email) {
             return in_array($address, array_merge($email->getCc(), $email->getBcc()), true) === false;
         });
+    }
+
+    /**
+     * Get the attachments.
+     */
+    protected function getAttachments(Email $email): array
+    {
+        $attachments = [];
+        if ($email->getAttachments()) {
+            foreach ($email->getAttachments() as $attachment) {
+                $attachmentHeaders = $attachment->getPreparedHeaders();
+
+                $contentType = $attachmentHeaders->get('Content-Type')->getBody();
+                $disposition = $attachmentHeaders->getHeaderBody('Content-Disposition');
+                $filename = $attachmentHeaders->getHeaderParameter('Content-Disposition', 'filename');
+
+                if ($contentType == 'text/calendar') {
+                    $content = $attachment->getBody();
+                } else {
+                    $content = str_replace("\r\n", '', $attachment->bodyToString());
+                }
+
+                $item = [
+                    'content_type' => $contentType,
+                    'content' => $content,
+                    'filename' => $filename,
+                ];
+
+                if ($disposition === 'inline') {
+                    $item['inline_content_id'] = 'cid:' . ($attachment->hasContentId() ? $attachment->getContentId() : $filename);
+                }
+
+                $attachments[] = $item;
+            }
+        }
+
+        return $attachments;
     }
 
     /**
