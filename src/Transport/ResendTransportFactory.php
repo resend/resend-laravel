@@ -105,7 +105,7 @@ class ResendTransportFactory extends AbstractTransport
                 ];
 
                 if ($disposition === 'inline') {
-                    $item['inline_content_id'] = $attachment->hasContentId() ? $attachment->getContentId() : $filename;
+                    $item['content_id'] = $attachment->hasContentId() ? $attachment->getContentId() : $filename;
                 }
 
                 $attachments[] = $item;
