@@ -63,7 +63,15 @@ class ResendTransportFactory extends AbstractTransport
             );
         }
 
-        $messageId = $result->id;
+        $messageId = $result->id ?? null;
+        $statusCode = $result->statusCode ?? 0;
+        
+        if ($statusCode >= 400 || !is_string($messageId) || $messageId === '') {
+            throw new TransportException(
+                sprintf('Request to the Resend API failed. Reason: %s', $result->message ?? 'Unknown error'),
+                $statusCode
+            );
+        }
 
         $email->getHeaders()->addHeader('X-Resend-Email-ID', $messageId);
     }
