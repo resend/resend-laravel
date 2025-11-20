@@ -21,7 +21,7 @@
         "friendsofphp/php-cs-fixer": "^3.14",
         "mockery/mockery": "^1.5",
         "orchestra/testbench": "^8.17|^9.0|^10.0",
-        "pestphp/pest": "^2.0|^3.7"
+        "pestphp/pest": "^2.0|^3.7|^4.0"
     },
     "autoload": {
         "psr-4": {
