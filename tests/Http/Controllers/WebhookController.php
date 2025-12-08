@@ -12,6 +12,7 @@ use Resend\Laravel\Events\EmailClicked;
 use Resend\Laravel\Events\EmailComplained;
 use Resend\Laravel\Events\EmailDelivered;
 use Resend\Laravel\Events\EmailDeliveryDelayed;
+use Resend\Laravel\Events\EmailFailed;
 use Resend\Laravel\Events\EmailOpened;
 use Resend\Laravel\Events\EmailSent;
 use Resend\Laravel\Http\Controllers\WebhookController as Controller;
@@ -45,6 +46,7 @@ test('correct methods are called and handled based on resend webhook event', fun
     ['email.delivery_delayed', EmailDeliveryDelayed::class],
     ['email.opened', EmailOpened::class],
     ['email.sent', EmailSent::class],
+    ['email.failed', EmailFailed::class],
 ]);
 
 test('normal response is returned if method is missing', function () {
