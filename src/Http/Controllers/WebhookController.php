@@ -16,7 +16,9 @@ use Resend\Laravel\Events\EmailClicked;
 use Resend\Laravel\Events\EmailComplained;
 use Resend\Laravel\Events\EmailDelivered;
 use Resend\Laravel\Events\EmailDeliveryDelayed;
+use Resend\Laravel\Events\EmailFailed;
 use Resend\Laravel\Events\EmailOpened;
+use Resend\Laravel\Events\EmailReceived;
 use Resend\Laravel\Events\EmailSent;
 use Resend\Laravel\Http\Middleware\VerifyWebhookSignature;
 use Symfony\Component\HttpFoundation\Response;
@@ -181,6 +183,26 @@ class WebhookController extends Controller
     protected function handleEmailSent(array $payload): Response
     {
         EmailSent::dispatch($payload);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle email failed event.
+     */
+    protected function handleEmailFailed(array $payload): Response
+    {
+        EmailFailed::dispatch($payload);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle email received event.
+     */
+    protected function handleEmailReceived(array $payload): Response
+    {
+        EmailReceived::dispatch($payload);
 
         return $this->successMethod();
     }
