@@ -15,7 +15,7 @@
         "illuminate/http": "^10.0|^11.0|^12.0",
         "illuminate/support": "^10.0|^11.0|^12.0",
         "resend/resend-php": "^1.0.0",
-        "symfony/mailer": "^6.2|^7.0"
+        "symfony/mailer": "8.0.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.14",
