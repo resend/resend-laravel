@@ -157,6 +157,83 @@ it('can send attachments', function () {
     $this->transporter->send($email);
 });
 
+it('can send inline attachments', function () {
+    $email = (new SymfonyEmail())
+        ->from('from@example.com')
+        ->to(new Address('to@example.com', 'Acme'))
+        ->subject('Test Subject')
+        ->text('Test plain text body');
+
+    $email->embed(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nunc augue, consectetur id neque eget, varius dignissim diam.',
+        'lorem-ipsum.txt',
+        'text/plain'
+    );
+
+    $apiResponse = new Email([
+        'id' => '49a3999c-0ce1-4ea6-ab68-afcd6dc2e794',
+    ]);
+
+    $this->client->emails
+        ->shouldReceive('send')
+        ->once()
+        ->with(Mockery::on(function ($arg) {
+            return $arg['from'] === 'from@example.com' &&
+                $arg['to'] === ['"Acme" <to@example.com>'] &&
+                $arg['subject'] === 'Test Subject' &&
+                ! empty($arg['attachments']) &&
+                array_key_exists('filename', $arg['attachments'][0]) &&
+                array_key_exists('content', $arg['attachments'][0]) &&
+                array_key_exists('content_id', $arg['attachments'][0]) &&
+                array_key_exists('content_type', $arg['attachments'][0]) &&
+                $arg['attachments'][0]['filename'] === 'lorem-ipsum.txt' &&
+                $arg['attachments'][0]['content'] === 'TG9yZW0gaXBzdW0gZG9sb3Igc2l0IGFtZXQsIGNvbnNlY3RldHVyIGFkaXBpc2NpbmcgZWxpdC4gQWVuZWFuIG51bmMgYXVndWUsIGNvbnNlY3RldHVyIGlkIG5lcXVlIGVnZXQsIHZhcml1cyBkaWduaXNzaW0gZGlhbS4=' &&
+                $arg['attachments'][0]['content_id'] === 'lorem-ipsum.txt' &&
+                $arg['attachments'][0]['content_type'] === 'text/plain';
+        }))
+        ->andReturn($apiResponse);
+
+    $this->transporter->send($email);
+});
+
+it('can send calendar attachements', function () {
+    $email = (new SymfonyEmail())
+        ->from('from@example.com')
+        ->to(new Address('to@example.com', 'Acme'))
+        ->subject('Meeting Invite')
+        ->text('Please see the attached calendar invite.');
+
+    $calendarContent = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Example Corp//NONSGML Event//EN\r\nCALSCALE:GREGORIAN\r\nBEGIN:VEVENT\r\nUID:";
+    $email->attach(
+        $calendarContent,
+        'invite.ics',
+        'text/calendar'
+    );
+
+    $apiResponse = new Email([
+        'id' => '49a3999c-0ce1-4ea6-ab68-afcd6dc2e794',
+    ]);
+
+    $this->client->emails
+        ->shouldReceive('send')
+        ->once()
+        ->with(Mockery::on(function ($arg) use ($calendarContent) {
+            return $arg['from'] === 'from@example.com' &&
+                $arg['to'] === ['"Acme" <to@example.com>'] &&
+                $arg['subject'] === 'Meeting Invite' &&
+                ! empty($arg['attachments']) &&
+                array_key_exists('content_type', $arg['attachments'][0]) &&
+                array_key_exists('content', $arg['attachments'][0]) &&
+                array_key_exists('filename', $arg['attachments'][0]) &&
+                $arg['attachments'][0]['content_type'] === 'text/calendar' &&
+                $arg['attachments'][0]['content'] === $calendarContent &&
+                $arg['attachments'][0]['filename'] === 'invite.ics';
+        }))
+        ->andReturn($apiResponse);
+
+    $this->transporter->send($email);
+});
+
 it('can handle exceptions', function () {
     $email = (new SymfonyEmail())
         ->from('from@example.com')
