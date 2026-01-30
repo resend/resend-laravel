@@ -3,30 +3,25 @@
 namespace Resend\Laravel\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Resend\Service\ApiKey;
-use Resend\Service\Audience;
-use Resend\Service\Batch;
-use Resend\Service\Contact;
-use Resend\Service\Domain;
-use Resend\Service\Email;
 
 /**
  * Provides Resend integration for Laravel and Symfony Mailer.
  *
- * @method static Contact contacts() Manage Resend contacts.
- * @method static Audience audiences() Manage Resend audiences through the Resend Email API.
- * @method static Batch batch() Create and send Resend Batches.
- * @method static ApiKey apiKeys() Manage Resend API keys.
- * @method static Domain domains() Manage Resend domains.
- * @method static Email emails() Manage Resend Emails.
+ * @method static \Resend\Service\ApiKey apiKeys()
+ * @method static \Resend\Service\Audience audiences()
+ * @method static \Resend\Service\Batch batch()
+ * @method static \Resend\Service\Broadcast broadcasts()
+ * @method static \Resend\Service\Contact contacts()
+ * @method static \Resend\Service\ContactProperty contactProperties()
+ * @method static \Resend\Service\Domain domains()
+ * @method static \Resend\Service\Email emails()
+ * @method static \Resend\Service\Segment segments()
+ * @method static \Resend\Service\Template templates()
+ * @method static \Resend\Service\Topic topics()
+ * @method static \Resend\Service\Webhook webhooks()
  *
- * @package resend-laravel
- * @see <a href="https://resend.com/docs/introduction">Resend Docs</a>
- * @see <a href="https://resend.com/docs/api-reference/introduction">API Reference</a>
+ * @see \Resend\Client
  */
-
-
-
 class Resend extends Facade
 {
     /**
