@@ -6,6 +6,7 @@ use Exception;
 use Resend\Contracts\Client;
 use Symfony\Component\Mailer\Envelope;
 use Symfony\Component\Mailer\Exception\TransportException;
+use Symfony\Component\Mailer\Header\MetadataHeader;
 use Symfony\Component\Mailer\SentMessage;
 use Symfony\Component\Mailer\Transport\AbstractTransport;
 use Symfony\Component\Mime\Address;
@@ -33,8 +34,15 @@ class ResendTransportFactory extends AbstractTransport
         $envelope = $message->getEnvelope();
 
         $headers = [];
+        $tags = [];
         $headersToBypass = ['from', 'to', 'cc', 'bcc', 'subject', 'content-type', 'sender', 'reply-to', 'resend-idempotency-key'];
         foreach ($email->getHeaders()->all() as $name => $header) {
+            if ($header instanceof MetadataHeader) {
+                $tags[] = ['name' => $header->getKey(), 'value' => $header->getValue()];
+
+                continue;
+            }
+
             if (in_array($name, $headersToBypass, true)) {
                 continue;
             }
@@ -57,6 +65,7 @@ class ResendTransportFactory extends AbstractTransport
                 'html' => $email->getHtmlBody(),
                 'reply_to' => $this->stringifyAddresses($email->getReplyTo()),
                 'subject' => $email->getSubject(),
+                'tags' => $tags,
                 'text' => $email->getTextBody(),
                 'to' => $this->stringifyAddresses($this->getRecipients($email, $envelope)),
                 'attachments' => $this->getAttachments($email),
