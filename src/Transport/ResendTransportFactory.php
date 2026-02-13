@@ -33,13 +33,19 @@ class ResendTransportFactory extends AbstractTransport
         $envelope = $message->getEnvelope();
 
         $headers = [];
-        $headersToBypass = ['from', 'to', 'cc', 'bcc', 'subject', 'content-type', 'sender', 'reply-to'];
+        $headersToBypass = ['from', 'to', 'cc', 'bcc', 'subject', 'content-type', 'sender', 'reply-to', 'resend-idempotency-key'];
         foreach ($email->getHeaders()->all() as $name => $header) {
             if (in_array($name, $headersToBypass, true)) {
                 continue;
             }
 
             $headers[$header->getName()] = $header->getBodyAsString();
+        }
+
+        $options = [];
+
+        if ($email->getHeaders()->has('Resend-Idempotency-Key')) {
+            $options['idempotency_key'] = $email->getHeaders()->get('Resend-Idempotency-Key')->getBodyAsString();
         }
 
         try {
@@ -54,7 +60,7 @@ class ResendTransportFactory extends AbstractTransport
                 'text' => $email->getTextBody(),
                 'to' => $this->stringifyAddresses($this->getRecipients($email, $envelope)),
                 'attachments' => $this->getAttachments($email),
-            ]);
+            ], $options);
         } catch (Exception $exception) {
             throw new TransportException(
                 sprintf('Request to the Resend API failed. Reason: %s', $exception->getMessage()),
