@@ -7,6 +7,7 @@ use Resend\Email;
 use Resend\Laravel\Transport\ResendTransportFactory;
 use Resend\Service\Email as EmailService;
 use Symfony\Component\Mailer\Exception\TransportException;
+use Symfony\Component\Mailer\Header\MetadataHeader;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email as SymfonyEmail;
 
@@ -61,7 +62,7 @@ it('can send', function () {
                 $arg['cc'] === ['cc@example.com'] &&
                 $arg['bcc'] === ['bcc@example.com'] &&
                 $arg['reply_to'] === ['reply-to@example.com'];
-        }))
+        }), Mockery::type('array'))
         ->andReturn($apiResponse);
 
     $this->transporter->send($email);
@@ -88,7 +89,7 @@ it('can send to multiple recipients', function () {
         ->with(Mockery::on(function ($arg) {
             return $arg['from'] === 'from@example.com' &&
                 $arg['to'] === ['"Acme" <to@example.com>', '"Acme Sales" <sales@example.com>'];
-        }))
+        }), Mockery::type('array'))
         ->andReturn($apiResponse);
 
     $this->transporter->send($email);
@@ -114,7 +115,7 @@ it('can send headers', function () {
                 $arg['to'] === ['"Acme" <to@example.com>'] &&
                 $arg['subject'] === 'Test Subject' &&
                 array_key_exists('X-Entity-Ref-ID', $arg['headers']);
-        }))
+        }), Mockery::type('array'))
         ->andReturn($apiResponse);
 
     $this->transporter->send($email);
@@ -151,7 +152,7 @@ it('can send attachments', function () {
                 $arg['attachments'][0]['filename'] === 'lorem-ipsum.txt' &&
                 $arg['attachments'][0]['content'] === 'TG9yZW0gaXBzdW0gZG9sb3Igc2l0IGFtZXQsIGNvbnNlY3RldHVyIGFkaXBpc2NpbmcgZWxpdC4gQWVuZWFuIG51bmMgYXVndWUsIGNvbnNlY3RldHVyIGlkIG5lcXVlIGVnZXQsIHZhcml1cyBkaWduaXNzaW0gZGlhbS4=' &&
                 $arg['attachments'][0]['content_type'] === 'text/plain';
-        }))
+        }), Mockery::type('array'))
         ->andReturn($apiResponse);
 
     $this->transporter->send($email);
@@ -190,7 +191,7 @@ it('can send inline attachments', function () {
                 $arg['attachments'][0]['content'] === 'TG9yZW0gaXBzdW0gZG9sb3Igc2l0IGFtZXQsIGNvbnNlY3RldHVyIGFkaXBpc2NpbmcgZWxpdC4gQWVuZWFuIG51bmMgYXVndWUsIGNvbnNlY3RldHVyIGlkIG5lcXVlIGVnZXQsIHZhcml1cyBkaWduaXNzaW0gZGlhbS4=' &&
                 $arg['attachments'][0]['content_id'] === 'lorem-ipsum.txt' &&
                 $arg['attachments'][0]['content_type'] === 'text/plain';
-        }))
+        }), Mockery::type('array'))
         ->andReturn($apiResponse);
 
     $this->transporter->send($email);
@@ -228,7 +229,7 @@ it('can send calendar attachements', function () {
                 $arg['attachments'][0]['content_type'] === 'text/calendar' &&
                 $arg['attachments'][0]['content'] === $calendarContent &&
                 $arg['attachments'][0]['filename'] === 'invite.ics';
-        }))
+        }), Mockery::type('array'))
         ->andReturn($apiResponse);
 
     $this->transporter->send($email);
@@ -268,7 +269,7 @@ it('can set the X-Resend-Email-ID', function () {
             return $arg['from'] === 'from@example.com' &&
                 $arg['to'] === ['"Acme" <to@example.com>'] &&
                 $arg['subject'] === 'Test Subject';
-        }))
+        }), Mockery::type('array'))
         ->andReturn($apiResponse);
 
     $message = $this->transporter->send($email);
@@ -285,4 +286,64 @@ it('can set the X-Resend-Email-ID', function () {
         ->get('X-Resend-Email-ID')
         ->getValue()
     )->toBe('49a3999c-0ce1-4ea6-ab68-afcd6dc2e794');
+});
+
+it('can send with tags', function () {
+    $email = (new SymfonyEmail())
+        ->from('from@example.com')
+        ->to(new Address('to@example.com', 'Acme'))
+        ->subject('Test Subject')
+        ->text('Test plain text body');
+    $email->getHeaders()->add(new MetadataHeader('category', 'confirm_email'));
+    $email->getHeaders()->add(new MetadataHeader('customer_id', '123'));
+
+    $apiResponse = new Email([
+        'id' => '49a3999c-0ce1-4ea6-ab68-afcd6dc2e794',
+    ]);
+
+    $this->client->emails
+        ->shouldReceive('send')
+        ->once()
+        ->with(Mockery::on(function ($arg) {
+            return $arg['from'] === 'from@example.com' &&
+                $arg['to'] === ['"Acme" <to@example.com>'] &&
+                $arg['subject'] === 'Test Subject' &&
+                $arg['tags'] === [
+                    ['name' => 'category', 'value' => 'confirm_email'],
+                    ['name' => 'customer_id', 'value' => '123'],
+                ] &&
+                ! array_key_exists('X-Metadata-category', $arg['headers']) &&
+                ! array_key_exists('X-Metadata-customer_id', $arg['headers']);
+        }), Mockery::type('array'))
+        ->andReturn($apiResponse);
+
+    $this->transporter->send($email);
+});
+
+it('can send with idempotency key', function () {
+    $email = (new SymfonyEmail())
+        ->from('from@example.com')
+        ->to(new Address('to@example.com', 'Acme'))
+        ->subject('Test Subject')
+        ->text('Test plain text body');
+    $email->getHeaders()->addTextHeader('Resend-Idempotency-Key', 'welcome-user/123456789');
+
+    $apiResponse = new Email([
+        'id' => '49a3999c-0ce1-4ea6-ab68-afcd6dc2e794',
+    ]);
+
+    $this->client->emails
+        ->shouldReceive('send')
+        ->once()
+        ->with(Mockery::on(function ($arg) {
+            return $arg['from'] === 'from@example.com' &&
+                $arg['to'] === ['"Acme" <to@example.com>'] &&
+                $arg['subject'] === 'Test Subject' &&
+                ! array_key_exists('Resend-Idempotency-Key', $arg['headers']);
+        }), Mockery::on(function ($options) {
+            return $options === ['idempotency_key' => 'welcome-user/123456789'];
+        }))
+        ->andReturn($apiResponse);
+
+    $this->transporter->send($email);
 });
