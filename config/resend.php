@@ -16,6 +16,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Resend Route Registration
+    |--------------------------------------------------------------------------
+    |
+    | This option controls whether the package will automatically register
+    | its default webhook route. If you prefer to handle webhooks through
+    | your own setup (e.g. using spatie/laravel-webhook-client), you may
+    | set this to false to disable the automatic route registration.
+    |
+    */
+
+    'register_route' => env('RESEND_REGISTER_ROUTE', true),
+
+    /*
+    |--------------------------------------------------------------------------
     | Resend Domain
     |--------------------------------------------------------------------------
     |

@@ -69,6 +69,10 @@ class ResendServiceProvider extends ServiceProvider
      */
     protected function registerRoutes(): void
     {
+        if (! config('resend.register_route', true)) {
+            return;
+        }
+
         Route::group([
             'domain' => config('resend.domain', null),
             'namespace' => 'Resend\Laravel\Http\Controllers',
