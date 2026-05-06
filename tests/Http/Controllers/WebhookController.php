@@ -16,6 +16,7 @@ use Resend\Laravel\Events\EmailFailed;
 use Resend\Laravel\Events\EmailOpened;
 use Resend\Laravel\Events\EmailReceived;
 use Resend\Laravel\Events\EmailSent;
+use Resend\Laravel\Events\EmailSuppressed;
 use Resend\Laravel\Http\Controllers\WebhookController as Controller;
 
 test('correct methods are called and handled based on resend webhook event', function (string $name, string $event) {
@@ -48,6 +49,7 @@ test('correct methods are called and handled based on resend webhook event', fun
     ['email.opened', EmailOpened::class],
     ['email.sent', EmailSent::class],
     ['email.failed', EmailFailed::class],
+    ['email.suppressed', EmailSuppressed::class],
     ['email.received', EmailReceived::class],
 ]);
 

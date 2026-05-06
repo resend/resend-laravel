@@ -20,6 +20,7 @@ use Resend\Laravel\Events\EmailFailed;
 use Resend\Laravel\Events\EmailOpened;
 use Resend\Laravel\Events\EmailReceived;
 use Resend\Laravel\Events\EmailSent;
+use Resend\Laravel\Events\EmailSuppressed;
 use Resend\Laravel\Http\Middleware\VerifyWebhookSignature;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -193,6 +194,16 @@ class WebhookController extends Controller
     protected function handleEmailFailed(array $payload): Response
     {
         EmailFailed::dispatch($payload);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle email suppressed event.
+     */
+    protected function handleEmailSuppressed(array $payload): Response
+    {
+        EmailSuppressed::dispatch($payload);
 
         return $this->successMethod();
     }
