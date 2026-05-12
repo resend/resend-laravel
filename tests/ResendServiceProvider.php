@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Routing\RouteCollection;
+use Illuminate\Support\Facades\Route;
 use Resend\Client;
 use Resend\Laravel\Exceptions\ApiKeyIsMissing;
 use Resend\Laravel\ResendServiceProvider;
@@ -29,4 +31,20 @@ it('provides', function () {
     expect($provides)->toBe([
         Client::class,
     ]);
+});
+
+it('registers the webhook route by default', function () {
+    expect(Route::has('resend.webhook'))->toBeTrue();
+});
+
+it('does not register the webhook route when register_route is false', function () {
+    config()->set('resend.register_route', false);
+
+    $router = app('router');
+    (new ReflectionProperty($router, 'routes'))->setValue($router, new RouteCollection());
+
+    $provider = new ResendServiceProvider(app());
+    (new ReflectionMethod($provider, 'registerRoutes'))->invoke($provider);
+
+    expect(Route::has('resend.webhook'))->toBeFalse();
 });
