@@ -16,6 +16,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Resend Routes
+    |--------------------------------------------------------------------------
+    |
+    | This option determines whether the package registers its routes, such
+    | as the webhook handler. You may disable this when handling incoming
+    | webhooks yourself or when the routes are not needed at all.
+    |
+    */
+
+    'routes' => env('RESEND_ROUTES', true),
+
+    /*
+    |--------------------------------------------------------------------------
     | Resend Domain
     |--------------------------------------------------------------------------
     |
