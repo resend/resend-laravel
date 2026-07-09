@@ -13,7 +13,8 @@ class DomainDeleted
      * Create a new domain deleted event instance.
      */
     public function __construct(
-        public array $payload
+        public array $payload,
+        public array $headers = []
     ) {
         //
     }

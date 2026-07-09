@@ -13,7 +13,8 @@ class EmailDelivered
      * Create a new email delivered event instance.
      */
     public function __construct(
-        public array $payload
+        public array $payload,
+        public array $headers = []
     ) {
         //
     }

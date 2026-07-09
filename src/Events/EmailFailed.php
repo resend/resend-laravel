@@ -13,7 +13,8 @@ class EmailFailed
      * Create a new email failed event instance.
      */
     public function __construct(
-        public array $payload
+        public array $payload,
+        public array $headers = []
     ) {
         //
     }

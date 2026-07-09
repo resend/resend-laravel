@@ -13,7 +13,8 @@ class EmailReceived
      * Create a new email received event instance.
      */
     public function __construct(
-        public array $payload
+        public array $payload,
+        public array $headers = []
     ) {
         //
     }

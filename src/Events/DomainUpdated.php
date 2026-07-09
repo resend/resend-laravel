@@ -13,7 +13,8 @@ class DomainUpdated
      * Create a new domain updated event instance.
      */
     public function __construct(
-        public array $payload
+        public array $payload,
+        public array $headers = []
     ) {
         //
     }

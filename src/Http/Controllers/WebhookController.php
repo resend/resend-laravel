@@ -47,10 +47,12 @@ class WebhookController extends Controller
             return new Response('Invalid payload', 400);
         }
 
+        $headers = $this->extractHeaders($request);
+
         $method = 'handle' . Str::studly(str_replace('.', '_', $payload['type']));
 
         if (method_exists($this, $method)) {
-            $response = $this->{$method}($payload);
+            $response = $this->{$method}($payload, $headers);
 
             return $response;
         }
@@ -59,11 +61,25 @@ class WebhookController extends Controller
     }
 
     /**
+     * Extract the Svix webhook headers from the request so listeners can use
+     * them (e.g. `svix-id` as a deduplication key).
+     *
+     * @return array<string, string>
+     */
+    protected function extractHeaders(Request $request): array
+    {
+        return collect(['svix-id', 'svix-timestamp', 'svix-signature'])
+            ->mapWithKeys(fn (string $key) => [$key => $request->header($key)])
+            ->filter()
+            ->all();
+    }
+
+    /**
      * Handle contact created event.
      */
-    protected function handleContactCreated(array $payload): Response
+    protected function handleContactCreated(array $payload, array $headers = []): Response
     {
-        ContactCreated::dispatch($payload);
+        ContactCreated::dispatch($payload, $headers);
 
         return $this->successMethod();
     }
@@ -71,9 +87,9 @@ class WebhookController extends Controller
     /**
      * Handle contact deleted event.
      */
-    protected function handleContactDeleted(array $payload): Response
+    protected function handleContactDeleted(array $payload, array $headers = []): Response
     {
-        ContactDeleted::dispatch($payload);
+        ContactDeleted::dispatch($payload, $headers);
 
         return $this->successMethod();
     }
@@ -81,9 +97,9 @@ class WebhookController extends Controller
     /**
      * Handle contact updated event.
      */
-    protected function handleContactUpdated(array $payload): Response
+    protected function handleContactUpdated(array $payload, array $headers = []): Response
     {
-        ContactUpdated::dispatch($payload);
+        ContactUpdated::dispatch($payload, $headers);
 
         return $this->successMethod();
     }
@@ -91,9 +107,9 @@ class WebhookController extends Controller
     /**
      * Handle domain created event.
      */
-    protected function handleDomainCreated(array $payload): Response
+    protected function handleDomainCreated(array $payload, array $headers = []): Response
     {
-        DomainCreated::dispatch($payload);
+        DomainCreated::dispatch($payload, $headers);
 
         return $this->successMethod();
     }
@@ -101,9 +117,9 @@ class WebhookController extends Controller
     /**
      * Handle domain deleted event.
      */
-    protected function handleDomainDeleted(array $payload): Response
+    protected function handleDomainDeleted(array $payload, array $headers = []): Response
     {
-        DomainDeleted::dispatch($payload);
+        DomainDeleted::dispatch($payload, $headers);
 
         return $this->successMethod();
     }
@@ -111,9 +127,9 @@ class WebhookController extends Controller
     /**
      * Handle domain updated event.
      */
-    protected function handleDomainUpdated(array $payload): Response
+    protected function handleDomainUpdated(array $payload, array $headers = []): Response
     {
-        DomainUpdated::dispatch($payload);
+        DomainUpdated::dispatch($payload, $headers);
 
         return $this->successMethod();
     }
@@ -121,9 +137,9 @@ class WebhookController extends Controller
     /**
      * Handle email bounced event.
      */
-    protected function handleEmailBounced(array $payload): Response
+    protected function handleEmailBounced(array $payload, array $headers = []): Response
     {
-        EmailBounced::dispatch($payload);
+        EmailBounced::dispatch($payload, $headers);
 
         return $this->successMethod();
     }
@@ -131,9 +147,9 @@ class WebhookController extends Controller
     /**
      * Handle email clicked event.
      */
-    protected function handleEmailClicked(array $payload): Response
+    protected function handleEmailClicked(array $payload, array $headers = []): Response
     {
-        EmailClicked::dispatch($payload);
+        EmailClicked::dispatch($payload, $headers);
 
         return $this->successMethod();
     }
@@ -141,9 +157,9 @@ class WebhookController extends Controller
     /**
      * Handle email complained event.
      */
-    protected function handleEmailComplained(array $payload): Response
+    protected function handleEmailComplained(array $payload, array $headers = []): Response
     {
-        EmailComplained::dispatch($payload);
+        EmailComplained::dispatch($payload, $headers);
 
         return $this->successMethod();
     }
@@ -151,9 +167,9 @@ class WebhookController extends Controller
     /**
      * Handle email delivered event.
      */
-    protected function handleEmailDelivered(array $payload): Response
+    protected function handleEmailDelivered(array $payload, array $headers = []): Response
     {
-        EmailDelivered::dispatch($payload);
+        EmailDelivered::dispatch($payload, $headers);
 
         return $this->successMethod();
     }
@@ -161,9 +177,9 @@ class WebhookController extends Controller
     /**
      * Handle email delivery delayed event.
      */
-    protected function handleEmailDeliveryDelayed(array $payload): Response
+    protected function handleEmailDeliveryDelayed(array $payload, array $headers = []): Response
     {
-        EmailDeliveryDelayed::dispatch($payload);
+        EmailDeliveryDelayed::dispatch($payload, $headers);
 
         return $this->successMethod();
     }
@@ -171,9 +187,9 @@ class WebhookController extends Controller
     /**
      * Handle email opened event.
      */
-    protected function handleEmailOpened(array $payload): Response
+    protected function handleEmailOpened(array $payload, array $headers = []): Response
     {
-        EmailOpened::dispatch($payload);
+        EmailOpened::dispatch($payload, $headers);
 
         return $this->successMethod();
     }
@@ -181,9 +197,9 @@ class WebhookController extends Controller
     /**
      * Handle email sent event.
      */
-    protected function handleEmailSent(array $payload): Response
+    protected function handleEmailSent(array $payload, array $headers = []): Response
     {
-        EmailSent::dispatch($payload);
+        EmailSent::dispatch($payload, $headers);
 
         return $this->successMethod();
     }
@@ -191,9 +207,9 @@ class WebhookController extends Controller
     /**
      * Handle email failed event.
      */
-    protected function handleEmailFailed(array $payload): Response
+    protected function handleEmailFailed(array $payload, array $headers = []): Response
     {
-        EmailFailed::dispatch($payload);
+        EmailFailed::dispatch($payload, $headers);
 
         return $this->successMethod();
     }
@@ -201,9 +217,9 @@ class WebhookController extends Controller
     /**
      * Handle email suppressed event.
      */
-    protected function handleEmailSuppressed(array $payload): Response
+    protected function handleEmailSuppressed(array $payload, array $headers = []): Response
     {
-        EmailSuppressed::dispatch($payload);
+        EmailSuppressed::dispatch($payload, $headers);
 
         return $this->successMethod();
     }
@@ -211,9 +227,9 @@ class WebhookController extends Controller
     /**
      * Handle email received event.
      */
-    protected function handleEmailReceived(array $payload): Response
+    protected function handleEmailReceived(array $payload, array $headers = []): Response
     {
-        EmailReceived::dispatch($payload);
+        EmailReceived::dispatch($payload, $headers);
 
         return $this->successMethod();
     }

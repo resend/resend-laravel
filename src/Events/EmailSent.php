@@ -13,7 +13,8 @@ class EmailSent
      * Create a new email sent event instance.
      */
     public function __construct(
-        public array $payload
+        public array $payload,
+        public array $headers = []
     ) {
         //
     }
