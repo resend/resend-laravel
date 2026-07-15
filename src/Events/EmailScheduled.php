@@ -13,7 +13,8 @@ class EmailScheduled
      * Create a new email scheduled event instance.
      */
     public function __construct(
-        public array $payload
+        public array $payload,
+        public array $headers = []
     ) {
         //
     }

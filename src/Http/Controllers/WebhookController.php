@@ -228,9 +228,9 @@ class WebhookController extends Controller
     /**
      * Handle email scheduled event.
      */
-    protected function handleEmailScheduled(array $payload): Response
+    protected function handleEmailScheduled(array $payload, array $headers = []): Response
     {
-        EmailScheduled::dispatch($payload);
+        EmailScheduled::dispatch($payload, $headers);
 
         return $this->successMethod();
     }
