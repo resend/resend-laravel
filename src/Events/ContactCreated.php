@@ -13,7 +13,8 @@ class ContactCreated
      * Create a new contact created event instance.
      */
     public function __construct(
-        public array $payload
+        public array $payload,
+        public array $headers = []
     ) {
         //
     }

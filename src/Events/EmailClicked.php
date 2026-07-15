@@ -13,7 +13,8 @@ class EmailClicked
      * Create a new email clicked event instance.
      */
     public function __construct(
-        public array $payload
+        public array $payload,
+        public array $headers = []
     ) {
         //
     }

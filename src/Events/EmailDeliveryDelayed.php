@@ -13,7 +13,8 @@ class EmailDeliveryDelayed
      * Create a new delivery delayed event instance.
      */
     public function __construct(
-        public array $payload
+        public array $payload,
+        public array $headers = []
     ) {
         //
     }

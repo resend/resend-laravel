@@ -30,7 +30,12 @@ test('correct methods are called and handled based on resend webhook event', fun
     $response = (new Controller)->handleWebhook($request);
 
     Event::assertDispatched($event, function ($e) use ($request) {
-        return $request->getContent() == json_encode($e->payload);
+        return $request->getContent() == json_encode($e->payload)
+            && $e->headers === [
+                'svix-id' => 'msg_123456789',
+                'svix-timestamp' => '1614265330',
+                'svix-signature' => 'v1,exampleSignature',
+            ];
     });
 
     expect($response->getStatusCode())->toBe(200)
@@ -54,6 +59,33 @@ test('correct methods are called and handled based on resend webhook event', fun
     ['email.scheduled', EmailScheduled::class],
     ['email.received', EmailReceived::class],
 ]);
+
+test('svix-id is forwarded to the event so it can be used as a dedup key', function () {
+    $request = webhookRequest('email.sent');
+
+    Event::fake([EmailSent::class]);
+
+    (new Controller)->handleWebhook($request);
+
+    Event::assertDispatched(EmailSent::class, function ($e) {
+        return $e->headers['svix-id'] === 'msg_123456789';
+    });
+});
+
+test('event receives empty headers when svix headers are absent', function () {
+    $request = Illuminate\Http\Request::create('/', 'POST', [], [], [], [], json_encode([
+        'id' => 're_evt_123456789',
+        'type' => 'email.sent',
+    ]));
+
+    Event::fake([EmailSent::class]);
+
+    (new Controller)->handleWebhook($request);
+
+    Event::assertDispatched(EmailSent::class, function ($e) {
+        return $e->headers === [];
+    });
+});
 
 test('normal response is returned if method is missing', function () {
     $request = webhookRequest('email.foo');

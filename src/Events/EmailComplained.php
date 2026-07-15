@@ -13,7 +13,8 @@ class EmailComplained
      * Create a new email complained event instance.
      */
     public function __construct(
-        public array $payload
+        public array $payload,
+        public array $headers = []
     ) {
         //
     }
