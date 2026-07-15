@@ -13,7 +13,8 @@ class ContactDeleted
      * Create a new contact deleted event instance.
      */
     public function __construct(
-        public array $payload
+        public array $payload,
+        public array $headers = []
     ) {
         //
     }

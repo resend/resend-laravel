@@ -13,7 +13,8 @@ class DomainCreated
      * Create a new domain created event instance.
      */
     public function __construct(
-        public array $payload
+        public array $payload,
+        public array $headers = []
     ) {
         //
     }

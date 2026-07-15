@@ -13,7 +13,8 @@ class EmailOpened
      * Create a new email opened event instance.
      */
     public function __construct(
-        public array $payload
+        public array $payload,
+        public array $headers = []
     ) {
         //
     }
