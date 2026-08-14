@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Facade;
  *
  * @method static \Resend\Service\ApiKey apiKeys()
  * @method static \Resend\Service\Audience audiences()
+ * @method static \Resend\Service\Automation automations()
  * @method static \Resend\Service\Batch batch()
  * @method static \Resend\Service\Broadcast broadcasts()
  * @method static \Resend\Service\Contact contacts()

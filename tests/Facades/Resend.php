@@ -4,6 +4,7 @@ use Resend\Client;
 use Resend\Laravel\Facades\Resend;
 use Resend\Service\ApiKey;
 use Resend\Service\Audience;
+use Resend\Service\Automation;
 use Resend\Service\Batch;
 use Resend\Service\Broadcast;
 use Resend\Service\Contact;
@@ -34,6 +35,7 @@ it('can get an API service', function () {
 
     expect(Resend::apiKeys())->toBeInstanceOf(ApiKey::class)
         ->and(Resend::audiences())->toBeInstanceOf(Audience::class)
+        ->and(Resend::automations())->toBeInstanceOf(Automation::class)
         ->and(Resend::batch())->toBeInstanceOf(Batch::class)
         ->and(Resend::broadcasts())->toBeInstanceOf(Broadcast::class)
         ->and(Resend::contacts())->toBeInstanceOf(Contact::class)
