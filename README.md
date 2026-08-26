@@ -45,6 +45,18 @@ Resend::emails()->send([
 ]);
 ```
 
+### Listing webhook events
+
+The `Resend` facade exposes webhook events and their delivery attempts:
+
+```php
+$events = Resend::webhooks()->events->list($webhookId);
+
+$event = Resend::webhooks()->events->get($webhookId, $eventId);
+
+$attempts = Resend::webhooks()->events->attempts->list($webhookId, $eventId);
+```
+
 ### Using Resend's Laravel mailer
 
 Resend for Laravel comes bundled with a Laravel mailer to make it easier to send emails. To start using the Resend mail transport, first create a new mailer definition within your application's `config/mail.php` configuration file:
