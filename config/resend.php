@@ -69,4 +69,15 @@ return [
         'tolerance' => env('RESEND_WEBHOOK_TOLERANCE', 300),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Route Middleware
+    |--------------------------------------------------------------------------
+    |
+    | The list of middlewares that will be assigned to the webhook route.
+    |
+    */
+
+    'middleware' => []
+
 ];
