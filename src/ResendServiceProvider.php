@@ -78,6 +78,7 @@ class ResendServiceProvider extends ServiceProvider
             'namespace' => 'Resend\Laravel\Http\Controllers',
             'prefix' => config('resend.path'),
             'as' => 'resend.',
+            'middleware' => config('resend.middleware', []),
         ], function () {
             $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
         });

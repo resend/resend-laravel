@@ -63,3 +63,11 @@ Finally, update the `MAIL_MAILER` environment variable to use `resend`:
 ```ini
 MAIL_MAILER=resend
 ```
+
+### Configuration
+
+You can optionally publish the configuration files to customize the package settings:
+
+```sh
+php artisan vendor:publish --tag=resend-config
+```
