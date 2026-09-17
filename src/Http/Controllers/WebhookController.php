@@ -22,6 +22,8 @@ use Resend\Laravel\Events\EmailReceived;
 use Resend\Laravel\Events\EmailScheduled;
 use Resend\Laravel\Events\EmailSent;
 use Resend\Laravel\Events\EmailSuppressed;
+use Resend\Laravel\Events\SuppressionAdded;
+use Resend\Laravel\Events\SuppressionRemoved;
 use Resend\Laravel\Http\Middleware\VerifyWebhookSignature;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -241,6 +243,26 @@ class WebhookController extends Controller
     protected function handleEmailReceived(array $payload, array $headers = []): Response
     {
         EmailReceived::dispatch($payload, $headers);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle suppression added event.
+     */
+    protected function handleSuppressionAdded(array $payload, array $headers = []): Response
+    {
+        SuppressionAdded::dispatch($payload, $headers);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle suppression removed event.
+     */
+    protected function handleSuppressionRemoved(array $payload, array $headers = []): Response
+    {
+        SuppressionRemoved::dispatch($payload, $headers);
 
         return $this->successMethod();
     }
