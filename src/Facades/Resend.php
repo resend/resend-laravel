@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static \Resend\Service\Segment segments()
  * @method static \Resend\Service\Template templates()
  * @method static \Resend\Service\Topic topics()
+ * @method static \Resend\Service\Usage usage()
  * @method static \Resend\Service\Webhook webhooks()
  *
  * @see \Resend\Client
