@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Event;
 use Resend\Laravel\Events\ContactCreated;
 use Resend\Laravel\Events\ContactDeleted;
+use Resend\Laravel\Events\ContactTopicsUpdated;
 use Resend\Laravel\Events\ContactUpdated;
 use Resend\Laravel\Events\DomainCreated;
 use Resend\Laravel\Events\DomainDeleted;
@@ -20,6 +21,9 @@ use Resend\Laravel\Events\EmailSent;
 use Resend\Laravel\Events\EmailSuppressed;
 use Resend\Laravel\Events\SuppressionAdded;
 use Resend\Laravel\Events\SuppressionRemoved;
+use Resend\Laravel\Events\TopicCreated;
+use Resend\Laravel\Events\TopicDeleted;
+use Resend\Laravel\Events\TopicUpdated;
 use Resend\Laravel\Http\Controllers\WebhookController as Controller;
 
 test('correct methods are called and handled based on resend webhook event', function (string $name, string $event) {
@@ -45,6 +49,7 @@ test('correct methods are called and handled based on resend webhook event', fun
 })->with([
     ['contact.created', ContactCreated::class],
     ['contact.deleted', ContactDeleted::class],
+    ['contact.topics.updated', ContactTopicsUpdated::class],
     ['contact.updated', ContactUpdated::class],
     ['domain.created', DomainCreated::class],
     ['domain.deleted', DomainDeleted::class],
@@ -62,6 +67,9 @@ test('correct methods are called and handled based on resend webhook event', fun
     ['email.received', EmailReceived::class],
     ['suppression.added', SuppressionAdded::class],
     ['suppression.removed', SuppressionRemoved::class],
+    ['topic.created', TopicCreated::class],
+    ['topic.deleted', TopicDeleted::class],
+    ['topic.updated', TopicUpdated::class],
 ]);
 
 test('svix-id is forwarded to the event so it can be used as a dedup key', function () {
