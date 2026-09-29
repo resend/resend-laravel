@@ -7,6 +7,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
 use Resend\Laravel\Events\ContactCreated;
 use Resend\Laravel\Events\ContactDeleted;
+use Resend\Laravel\Events\ContactTopicsUpdated;
 use Resend\Laravel\Events\ContactUpdated;
 use Resend\Laravel\Events\DomainCreated;
 use Resend\Laravel\Events\DomainDeleted;
@@ -24,6 +25,9 @@ use Resend\Laravel\Events\EmailSent;
 use Resend\Laravel\Events\EmailSuppressed;
 use Resend\Laravel\Events\SuppressionAdded;
 use Resend\Laravel\Events\SuppressionRemoved;
+use Resend\Laravel\Events\TopicCreated;
+use Resend\Laravel\Events\TopicDeleted;
+use Resend\Laravel\Events\TopicUpdated;
 use Resend\Laravel\Http\Middleware\VerifyWebhookSignature;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -93,6 +97,16 @@ class WebhookController extends Controller
     protected function handleContactDeleted(array $payload, array $headers = []): Response
     {
         ContactDeleted::dispatch($payload, $headers);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle contact topics updated event.
+     */
+    protected function handleContactTopicsUpdated(array $payload, array $headers = []): Response
+    {
+        ContactTopicsUpdated::dispatch($payload, $headers);
 
         return $this->successMethod();
     }
@@ -263,6 +277,36 @@ class WebhookController extends Controller
     protected function handleSuppressionRemoved(array $payload, array $headers = []): Response
     {
         SuppressionRemoved::dispatch($payload, $headers);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle topic created event.
+     */
+    protected function handleTopicCreated(array $payload, array $headers = []): Response
+    {
+        TopicCreated::dispatch($payload, $headers);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle topic deleted event.
+     */
+    protected function handleTopicDeleted(array $payload, array $headers = []): Response
+    {
+        TopicDeleted::dispatch($payload, $headers);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle topic updated event.
+     */
+    protected function handleTopicUpdated(array $payload, array $headers = []): Response
+    {
+        TopicUpdated::dispatch($payload, $headers);
 
         return $this->successMethod();
     }
