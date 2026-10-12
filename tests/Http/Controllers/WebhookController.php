@@ -19,6 +19,20 @@ use Resend\Laravel\Events\EmailReceived;
 use Resend\Laravel\Events\EmailScheduled;
 use Resend\Laravel\Events\EmailSent;
 use Resend\Laravel\Events\EmailSuppressed;
+use Resend\Laravel\Events\InboxCreated;
+use Resend\Laravel\Events\InboxDeleted;
+use Resend\Laravel\Events\InboxDraftCreated;
+use Resend\Laravel\Events\InboxDraftDeleted;
+use Resend\Laravel\Events\InboxDraftSent;
+use Resend\Laravel\Events\InboxDraftUpdated;
+use Resend\Laravel\Events\InboxEmailReceived;
+use Resend\Laravel\Events\InboxEmailSent;
+use Resend\Laravel\Events\InboxThreadAssigned;
+use Resend\Laravel\Events\InboxThreadCreated;
+use Resend\Laravel\Events\InboxThreadFolderUpdated;
+use Resend\Laravel\Events\InboxThreadLabelsUpdated;
+use Resend\Laravel\Events\InboxThreadUnassigned;
+use Resend\Laravel\Events\InboxUpdated;
 use Resend\Laravel\Events\SuppressionAdded;
 use Resend\Laravel\Events\SuppressionRemoved;
 use Resend\Laravel\Events\TopicCreated;
@@ -65,6 +79,20 @@ test('correct methods are called and handled based on resend webhook event', fun
     ['email.suppressed', EmailSuppressed::class],
     ['email.scheduled', EmailScheduled::class],
     ['email.received', EmailReceived::class],
+    ['inbox.created', InboxCreated::class],
+    ['inbox.deleted', InboxDeleted::class],
+    ['inbox.draft.created', InboxDraftCreated::class],
+    ['inbox.draft.deleted', InboxDraftDeleted::class],
+    ['inbox.draft.sent', InboxDraftSent::class],
+    ['inbox.draft.updated', InboxDraftUpdated::class],
+    ['inbox.email.received', InboxEmailReceived::class],
+    ['inbox.email.sent', InboxEmailSent::class],
+    ['inbox.thread.assigned', InboxThreadAssigned::class],
+    ['inbox.thread.created', InboxThreadCreated::class],
+    ['inbox.thread.folder.updated', InboxThreadFolderUpdated::class],
+    ['inbox.thread.labels.updated', InboxThreadLabelsUpdated::class],
+    ['inbox.thread.unassigned', InboxThreadUnassigned::class],
+    ['inbox.updated', InboxUpdated::class],
     ['suppression.added', SuppressionAdded::class],
     ['suppression.removed', SuppressionRemoved::class],
     ['topic.created', TopicCreated::class],

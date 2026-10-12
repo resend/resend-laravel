@@ -23,6 +23,20 @@ use Resend\Laravel\Events\EmailReceived;
 use Resend\Laravel\Events\EmailScheduled;
 use Resend\Laravel\Events\EmailSent;
 use Resend\Laravel\Events\EmailSuppressed;
+use Resend\Laravel\Events\InboxCreated;
+use Resend\Laravel\Events\InboxDeleted;
+use Resend\Laravel\Events\InboxDraftCreated;
+use Resend\Laravel\Events\InboxDraftDeleted;
+use Resend\Laravel\Events\InboxDraftSent;
+use Resend\Laravel\Events\InboxDraftUpdated;
+use Resend\Laravel\Events\InboxEmailReceived;
+use Resend\Laravel\Events\InboxEmailSent;
+use Resend\Laravel\Events\InboxThreadAssigned;
+use Resend\Laravel\Events\InboxThreadCreated;
+use Resend\Laravel\Events\InboxThreadFolderUpdated;
+use Resend\Laravel\Events\InboxThreadLabelsUpdated;
+use Resend\Laravel\Events\InboxThreadUnassigned;
+use Resend\Laravel\Events\InboxUpdated;
 use Resend\Laravel\Events\SuppressionAdded;
 use Resend\Laravel\Events\SuppressionRemoved;
 use Resend\Laravel\Events\TopicCreated;
@@ -257,6 +271,146 @@ class WebhookController extends Controller
     protected function handleEmailReceived(array $payload, array $headers = []): Response
     {
         EmailReceived::dispatch($payload, $headers);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle inbox created event.
+     */
+    protected function handleInboxCreated(array $payload, array $headers = []): Response
+    {
+        InboxCreated::dispatch($payload, $headers);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle inbox deleted event.
+     */
+    protected function handleInboxDeleted(array $payload, array $headers = []): Response
+    {
+        InboxDeleted::dispatch($payload, $headers);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle inbox draft created event.
+     */
+    protected function handleInboxDraftCreated(array $payload, array $headers = []): Response
+    {
+        InboxDraftCreated::dispatch($payload, $headers);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle inbox draft deleted event.
+     */
+    protected function handleInboxDraftDeleted(array $payload, array $headers = []): Response
+    {
+        InboxDraftDeleted::dispatch($payload, $headers);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle inbox draft sent event.
+     */
+    protected function handleInboxDraftSent(array $payload, array $headers = []): Response
+    {
+        InboxDraftSent::dispatch($payload, $headers);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle inbox draft updated event.
+     */
+    protected function handleInboxDraftUpdated(array $payload, array $headers = []): Response
+    {
+        InboxDraftUpdated::dispatch($payload, $headers);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle inbox email received event.
+     */
+    protected function handleInboxEmailReceived(array $payload, array $headers = []): Response
+    {
+        InboxEmailReceived::dispatch($payload, $headers);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle inbox email sent event.
+     */
+    protected function handleInboxEmailSent(array $payload, array $headers = []): Response
+    {
+        InboxEmailSent::dispatch($payload, $headers);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle inbox thread assigned event.
+     */
+    protected function handleInboxThreadAssigned(array $payload, array $headers = []): Response
+    {
+        InboxThreadAssigned::dispatch($payload, $headers);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle inbox thread created event.
+     */
+    protected function handleInboxThreadCreated(array $payload, array $headers = []): Response
+    {
+        InboxThreadCreated::dispatch($payload, $headers);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle inbox thread folder updated event.
+     */
+    protected function handleInboxThreadFolderUpdated(array $payload, array $headers = []): Response
+    {
+        InboxThreadFolderUpdated::dispatch($payload, $headers);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle inbox thread labels updated event.
+     */
+    protected function handleInboxThreadLabelsUpdated(array $payload, array $headers = []): Response
+    {
+        InboxThreadLabelsUpdated::dispatch($payload, $headers);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle inbox thread unassigned event.
+     */
+    protected function handleInboxThreadUnassigned(array $payload, array $headers = []): Response
+    {
+        InboxThreadUnassigned::dispatch($payload, $headers);
+
+        return $this->successMethod();
+    }
+
+    /**
+     * Handle inbox updated event.
+     */
+    protected function handleInboxUpdated(array $payload, array $headers = []): Response
+    {
+        InboxUpdated::dispatch($payload, $headers);
 
         return $this->successMethod();
     }
