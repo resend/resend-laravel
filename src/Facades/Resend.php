@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static \Resend\Service\ContactProperty contactProperties()
  * @method static \Resend\Service\Domain domains()
  * @method static \Resend\Service\Email emails()
+ * @method static \Resend\Service\Inbox inboxes()
  * @method static \Resend\Service\Segment segments()
  * @method static \Resend\Service\Template templates()
  * @method static \Resend\Service\Topic topics()
