@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Resend\Laravel\Tests\TestCase;
 
-if (! interface_exists(\Illuminate\Mail\Transport\BatchTransport::class)) {
+if (! interface_exists(Illuminate\Mail\Transport\BatchTransport::class)) {
     require __DIR__ . '/Fixtures/BatchTransport.php';
 }
 

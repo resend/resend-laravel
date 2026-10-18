@@ -47,13 +47,22 @@ class ResendTransportFactory extends AbstractTransport
         $messageId = $result->id ?? null;
         $statusCode = $result->statusCode ?? 0;
 
-        if ($statusCode >= 400 || !is_string($messageId) || $messageId === '') {
+        if ($statusCode >= 400 || ! is_string($messageId) || $messageId === '') {
             throw new TransportException(
                 sprintf('Request to the Resend API failed. Reason: %s', $result->message ?? 'Unknown error'),
                 $statusCode
             );
         }
 
+        $this->setResendEmailId($email, $messageId);
+    }
+
+    /**
+     * Set the Resend email ID header on the given email, replacing any existing one.
+     */
+    protected function setResendEmailId(Email $email, string $messageId): void
+    {
+        $email->getHeaders()->remove('X-Resend-Email-ID');
         $email->getHeaders()->addHeader('X-Resend-Email-ID', $messageId);
     }
 
@@ -64,7 +73,7 @@ class ResendTransportFactory extends AbstractTransport
     {
         $headers = [];
         $tags = [];
-        $headersToBypass = ['from', 'to', 'cc', 'bcc', 'subject', 'content-type', 'sender', 'reply-to', 'resend-idempotency-key'];
+        $headersToBypass = ['from', 'to', 'cc', 'bcc', 'subject', 'content-type', 'sender', 'reply-to', 'resend-idempotency-key', 'x-resend-email-id'];
         foreach ($email->getHeaders()->all() as $name => $header) {
             if ($header instanceof MetadataHeader) {
                 $tags[] = ['name' => $header->getKey(), 'value' => $header->getValue()];

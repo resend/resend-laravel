@@ -110,3 +110,93 @@ it('uses the configured validation mode', function () {
 
     $transporter->sendBatch([batchMessage('one@example.com', 'One'), batchMessage('two@example.com', 'Two')]);
 })->throws(TransportException::class, 'Request to the Resend API failed. Reason: Validation failed');
+
+it('fails every accepted message when the response cannot be matched', function () {
+    $this->client->batch->shouldReceive('send')->once()->andReturn(Collection::from([
+        'data' => [Email::from(['id' => 'id-one'])],
+        'errors' => [['index' => 2, 'message' => 'Invalid `to` field']],
+    ]));
+
+    $failures = $this->transporter->sendBatch([
+        batchMessage('one@example.com', 'One'),
+        batchMessage('two@example.com', 'Two'),
+        batchMessage('three@example.com', 'Three'),
+    ]);
+
+    expect(array_keys($failures))->toBe([0, 1, 2])
+        ->and($failures[0]->getMessage())->toContain('Unable to match')
+        ->and($failures[2]->getMessage())->toContain('Invalid `to` field');
+});
+
+it('fails every message when an error index is invalid', function () {
+    $this->client->batch->shouldReceive('send')->once()->andReturn(Collection::from([
+        'data' => [Email::from(['id' => 'id-one'])],
+        'errors' => [['index' => 'nope', 'message' => 'Invalid']],
+    ]));
+
+    $failures = $this->transporter->sendBatch([batchMessage('one@example.com', 'One'), batchMessage('two@example.com', 'Two')]);
+
+    expect(array_keys($failures))->toBe([0, 1]);
+});
+
+it('fails messages resend returned no id for', function () {
+    $this->client->batch->shouldReceive('send')->once()->andReturn(Collection::from([
+        'data' => [Email::from(['id' => 'id-one']), Email::from(['id' => ''])],
+    ]));
+
+    $messages = [batchMessage('one@example.com', 'One'), batchMessage('two@example.com', 'Two')];
+
+    $failures = $this->transporter->sendBatch($messages);
+
+    expect(array_keys($failures))->toBe([1])
+        ->and($messages[0]->getMessageId())->toBe('id-one');
+});
+
+it('does not send a stale X-Resend-Email-ID and replaces it', function () {
+    $messages = [batchMessage('one@example.com', 'One'), batchMessage('two@example.com', 'Two')];
+    $messages[0]->getOriginalMessage()->getHeaders()->addTextHeader('X-Resend-Email-ID', 'stale');
+
+    $this->client->batch
+        ->shouldReceive('send')
+        ->once()
+        ->with(Mockery::on(fn ($payloads) => ! array_key_exists('X-Resend-Email-ID', $payloads[0]['headers'])), Mockery::any())
+        ->andReturn(Collection::from(['data' => [Email::from(['id' => 'id-one']), Email::from(['id' => 'id-two'])]]));
+
+    $this->transporter->sendBatch($messages);
+
+    $ids = array_map(
+        fn ($header) => $header->getBodyAsString(),
+        iterator_to_array($messages[0]->getOriginalMessage()->getHeaders()->all('X-Resend-Email-ID'), false)
+    );
+
+    expect($ids)->toBe(['id-one']);
+});
+
+it('reads the validation mode from the mailer config', function (array $config, string $expected) {
+    app()['config']->set('resend', ['api_key' => 're_test_12345678']);
+    app()->instance('resend', $this->client);
+
+    $this->client->batch
+        ->shouldReceive('send')
+        ->once()
+        ->with(Mockery::type('array'), ['batch_validation' => $expected])
+        ->andReturn(Collection::from(['data' => [Email::from(['id' => 'a']), Email::from(['id' => 'b'])]]));
+
+    app(MailManager::class)
+        ->createSymfonyTransport(['transport' => 'resend', ...$config])
+        ->sendBatch([batchMessage('one@example.com', 'One'), batchMessage('two@example.com', 'Two')]);
+})->with([
+    'default' => [[], 'permissive'],
+    'top level' => [['batch_validation' => 'strict'], 'strict'],
+    'options win' => [['batch_validation' => 'strict', 'options' => ['batch_validation' => 'permissive']], 'permissive'],
+]);
+
+it('falls back to the single send transport when laravel does not support batching', function () {
+    $output = json_decode(shell_exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(__DIR__ . '/../Fixtures/legacy-transport.php.stub')), true);
+
+    if ($output['interface']) {
+        $this->markTestSkipped('The installed Laravel version supports batching.');
+    }
+
+    expect($output['transport'])->toBe(Resend\Laravel\Transport\ResendTransportFactory::class);
+});

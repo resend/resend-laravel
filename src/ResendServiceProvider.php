@@ -2,13 +2,13 @@
 
 namespace Resend\Laravel;
 
+use Illuminate\Mail\Transport\BatchTransport;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Resend;
 use Resend\Client;
 use Resend\Contracts\Client as ClientContract;
-use Illuminate\Mail\Transport\BatchTransport;
 use Resend\Laravel\Exceptions\ApiKeyIsMissing;
 use Resend\Laravel\Transport\ResendBatchTransport;
 use Resend\Laravel\Transport\ResendTransportFactory;

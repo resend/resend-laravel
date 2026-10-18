@@ -1,0 +1,19 @@
+<?php
+
+// Boots an application without the BatchTransport stub loaded, so the provider's
+// fallback for Laravel versions that don't ship the contract can be exercised.
+
+require __DIR__ . '/../../vendor/autoload.php';
+
+use Illuminate\Mail\MailManager;
+use Orchestra\Testbench\Foundation\Application;
+use Resend\Laravel\ResendServiceProvider;
+
+$app = Application::create(options: ['extra' => ['providers' => [ResendServiceProvider::class]]]);
+
+$app['config']->set('resend.api_key', 're_test_12345678');
+
+echo json_encode([
+    'interface' => interface_exists(\Illuminate\Mail\Transport\BatchTransport::class),
+    'transport' => get_class($app->make(MailManager::class)->createSymfonyTransport(['transport' => 'resend'])),
+]);
