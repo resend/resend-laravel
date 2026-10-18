@@ -31,8 +31,37 @@ class ResendTransportFactory extends AbstractTransport
     protected function doSend(SentMessage $message): void
     {
         $email = MessageConverter::toEmail($message->getOriginalMessage());
-        $envelope = $message->getEnvelope();
 
+        $options = [];
+
+        if ($email->getHeaders()->has('Resend-Idempotency-Key')) {
+            $options['idempotency_key'] = $email->getHeaders()->get('Resend-Idempotency-Key')->getBodyAsString();
+        }
+
+        try {
+            $result = $this->resend->emails->send($this->getPayload($email, $message->getEnvelope()), $options);
+        } catch (Exception $exception) {
+            throw $this->requestFailed($exception);
+        }
+
+        $messageId = $result->id ?? null;
+        $statusCode = $result->statusCode ?? 0;
+
+        if ($statusCode >= 400 || !is_string($messageId) || $messageId === '') {
+            throw new TransportException(
+                sprintf('Request to the Resend API failed. Reason: %s', $result->message ?? 'Unknown error'),
+                $statusCode
+            );
+        }
+
+        $email->getHeaders()->addHeader('X-Resend-Email-ID', $messageId);
+    }
+
+    /**
+     * Get the Resend API payload for the given email.
+     */
+    protected function getPayload(Email $email, Envelope $envelope): array
+    {
         $headers = [];
         $tags = [];
         $headersToBypass = ['from', 'to', 'cc', 'bcc', 'subject', 'content-type', 'sender', 'reply-to', 'resend-idempotency-key'];
@@ -50,45 +79,31 @@ class ResendTransportFactory extends AbstractTransport
             $headers[$header->getName()] = $header->getBodyAsString();
         }
 
-        $options = [];
+        return [
+            'bcc' => $this->stringifyAddresses($email->getBcc()),
+            'cc' => $this->stringifyAddresses($email->getCc()),
+            'from' => $envelope->getSender()->toString(),
+            'headers' => $headers,
+            'html' => $email->getHtmlBody(),
+            'reply_to' => $this->stringifyAddresses($email->getReplyTo()),
+            'subject' => $email->getSubject(),
+            'tags' => $tags,
+            'text' => $email->getTextBody(),
+            'to' => $this->stringifyAddresses($this->getRecipients($email, $envelope)),
+            'attachments' => $this->getAttachments($email),
+        ];
+    }
 
-        if ($email->getHeaders()->has('Resend-Idempotency-Key')) {
-            $options['idempotency_key'] = $email->getHeaders()->get('Resend-Idempotency-Key')->getBodyAsString();
-        }
-
-        try {
-            $result = $this->resend->emails->send([
-                'bcc' => $this->stringifyAddresses($email->getBcc()),
-                'cc' => $this->stringifyAddresses($email->getCc()),
-                'from' => $envelope->getSender()->toString(),
-                'headers' => $headers,
-                'html' => $email->getHtmlBody(),
-                'reply_to' => $this->stringifyAddresses($email->getReplyTo()),
-                'subject' => $email->getSubject(),
-                'tags' => $tags,
-                'text' => $email->getTextBody(),
-                'to' => $this->stringifyAddresses($this->getRecipients($email, $envelope)),
-                'attachments' => $this->getAttachments($email),
-            ], $options);
-        } catch (Exception $exception) {
-            throw new TransportException(
-                sprintf('Request to the Resend API failed. Reason: %s', $exception->getMessage()),
-                is_int($exception->getCode()) ? $exception->getCode() : 0,
-                $exception
-            );
-        }
-
-        $messageId = $result->id ?? null;
-        $statusCode = $result->statusCode ?? 0;
-        
-        if ($statusCode >= 400 || !is_string($messageId) || $messageId === '') {
-            throw new TransportException(
-                sprintf('Request to the Resend API failed. Reason: %s', $result->message ?? 'Unknown error'),
-                $statusCode
-            );
-        }
-
-        $email->getHeaders()->addHeader('X-Resend-Email-ID', $messageId);
+    /**
+     * Create an exception for a failed request to the Resend API.
+     */
+    protected function requestFailed(Exception $exception): TransportException
+    {
+        return new TransportException(
+            sprintf('Request to the Resend API failed. Reason: %s', $exception->getMessage()),
+            is_int($exception->getCode()) ? $exception->getCode() : 0,
+            $exception
+        );
     }
 
     /**

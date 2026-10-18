@@ -3,6 +3,10 @@
 use Illuminate\Http\Request;
 use Resend\Laravel\Tests\TestCase;
 
+if (! interface_exists(\Illuminate\Mail\Transport\BatchTransport::class)) {
+    require __DIR__ . '/Fixtures/BatchTransport.php';
+}
+
 uses(TestCase::class)->in(__DIR__);
 
 function webhookRequest(string $event): Request

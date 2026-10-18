@@ -8,7 +8,9 @@ use Illuminate\Support\ServiceProvider;
 use Resend;
 use Resend\Client;
 use Resend\Contracts\Client as ClientContract;
+use Illuminate\Mail\Transport\BatchTransport;
 use Resend\Laravel\Exceptions\ApiKeyIsMissing;
+use Resend\Laravel\Transport\ResendBatchTransport;
 use Resend\Laravel\Transport\ResendTransportFactory;
 
 class ResendServiceProvider extends ServiceProvider
@@ -22,7 +24,15 @@ class ResendServiceProvider extends ServiceProvider
         $this->registerPublishing();
 
         Mail::extend('resend', function (array $config = []) {
-            return new ResendTransportFactory($this->app['resend'], $config['options'] ?? []);
+            $options = $config['options'] ?? [];
+
+            if (isset($config['batch_validation'])) {
+                $options['batch_validation'] ??= $config['batch_validation'];
+            }
+
+            return interface_exists(BatchTransport::class)
+                ? new ResendBatchTransport($this->app['resend'], $options)
+                : new ResendTransportFactory($this->app['resend'], $options);
         });
     }
 
