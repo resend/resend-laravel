@@ -71,3 +71,10 @@ You can optionally publish the configuration files to customize the package sett
 ```sh
 php artisan vendor:publish --tag=resend-config
 ```
+
+Requests to the Resend API time out after 30 seconds, or 10 seconds while connecting. You may change these with the `RESEND_TIMEOUT` and `RESEND_CONNECT_TIMEOUT` environment variables:
+
+```ini
+RESEND_TIMEOUT=30
+RESEND_CONNECT_TIMEOUT=10
+```

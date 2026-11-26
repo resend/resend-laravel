@@ -16,6 +16,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Resend HTTP Timeouts
+    |--------------------------------------------------------------------------
+    |
+    | The number of seconds to wait for a response from the Resend API, and
+    | to wait while connecting to it. Without a limit, a stalled request
+    | would block the process (such as a queue worker) indefinitely.
+    |
+    */
+
+    'timeout' => env('RESEND_TIMEOUT', 30),
+
+    'connect_timeout' => env('RESEND_CONNECT_TIMEOUT', 10),
+
+    /*
+    |--------------------------------------------------------------------------
     | Resend Routes
     |--------------------------------------------------------------------------
     |
