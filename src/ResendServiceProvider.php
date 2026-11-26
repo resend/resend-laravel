@@ -2,14 +2,18 @@
 
 namespace Resend\Laravel;
 
+use GuzzleHttp\Client as GuzzleClient;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Resend;
 use Resend\Client;
 use Resend\Contracts\Client as ClientContract;
 use Resend\Laravel\Exceptions\ApiKeyIsMissing;
 use Resend\Laravel\Transport\ResendTransportFactory;
+use Resend\Transporters\HttpTransporter;
+use Resend\ValueObjects\ApiKey;
+use Resend\ValueObjects\Transporter\BaseUri;
+use Resend\ValueObjects\Transporter\Headers;
 
 class ResendServiceProvider extends ServiceProvider
 {
@@ -57,7 +61,16 @@ class ResendServiceProvider extends ServiceProvider
                 throw ApiKeyIsMissing::create();
             }
 
-            return Resend::client($apiKey);
+            $client = new GuzzleClient([
+                'timeout' => (float) config('resend.timeout', 30),
+                'connect_timeout' => (float) config('resend.connect_timeout', 10),
+            ]);
+
+            return new Client(new HttpTransporter(
+                $client,
+                BaseUri::from(getenv('RESEND_BASE_URL') ?: 'api.resend.com'),
+                Headers::withAuthorization(ApiKey::from($apiKey)),
+            ));
         });
 
         $this->app->alias(ClientContract::class, 'resend');
